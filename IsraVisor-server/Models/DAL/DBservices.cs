@@ -66,6 +66,11 @@ public class DBservices
         }
     }
 
+    internal int UpdateGuide(Guide value)
+    {
+        throw new NotImplementedException();
+    }
+
     public int PostGuideToSQL(Guide g)
     {
     

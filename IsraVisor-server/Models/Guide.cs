@@ -31,6 +31,11 @@ namespace IsraVisor_server.Models
             return numAffected;
         }
 
+        internal void UpdateGuide(Guide value)
+        {
+            throw new NotImplementedException();
+        }
+
         public string PasswordGuide { get; set; }
         public bool Gender { get; set; }
         public DateTime BirthDay { get; set; }
