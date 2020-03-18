@@ -18,9 +18,10 @@ namespace IsraVisor_server.Controllers
         }
 
         // GET api/<controller>/5
-        public string Get(int id)
+        public List<Guide_Language> Get(int id)
         {
-            return "value";
+            Guide_Language g = new Guide_Language();
+            return g.ReadAllGuideLanguages(id);
         }
 
         // POST api/<controller>
@@ -30,9 +31,19 @@ namespace IsraVisor_server.Controllers
             g1.PostGuideToSQL(g);
         }
 
-        // PUT api/<controller>/5
-        public void Put(int id, [FromBody]string value)
+        [HttpPost]
+        [Route("api/Guide/PostGuideLanguage")]
+        public void PostLanguage([FromBody]Guide_Language guideLan)
         {
+            Guide_Language guideLnagu = new Guide_Language();
+            guideLnagu.PostLanguagesGuideToSQL(guideLan);
+        }
+
+        // PUT api/<controller>/5
+        public int Put([FromBody]Guide g)
+        {
+            Guide guide = new Guide();
+            return(guide.UpdateGuideSQL(g));
         }
 
         // DELETE api/<controller>/5

@@ -3,16 +3,31 @@
 <head>
     <script src="../Scripts/ajaxCalls.js"></script>
     <script src="../Scripts/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <meta charset="utf-8" />
     <title></title>
     <script>
         $(document).ready(function () {
-            getGuide();
+            //getGuide();
+            getGuideLang();
         });
+        function getGuideLang() {
+            let num = 2;
+            ajaxCall("GET", "../../api/Guide/" + num, "", successCB, errorCB)
+        }
 
 
         function getGuide() {
             ajaxCall("GET", "../../api/Guide", "", successCB, errorCB)
+        }
+        function getLanguage() {
+            ajaxCall("GET", "../../api/Language", "", successCB, errorCB)
+        }
+        function getLanguageGuide() {
+            ajaxCall("GET", "../../api/Language/GetGuideLanguages", "", successCB, errorCB)
         }
         function successCB(data) {
             console.log(data);
@@ -26,9 +41,40 @@
                 "passwordGuide": "12345",
                 "FirstName": "nil",
                 "LastName": "givol",
-                "ProfilePic":"https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10219752182848757&height=50&width=50&ext=1586536115&hash=AeScwexuJoqoeOHl"
+                "ProfilePic": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10219752182848757&height=50&width=50&ext=1586536115&hash=AeScwexuJoqoeOHl"
             }
             ajaxCall("POST", "../../api/Guide", JSON.stringify(guide), successCBPost, errorCBPost)
+        }
+
+        function postGuideLang() {
+            list = {
+                "Guide_Code": 2,
+                "Language_Code": 2
+            }
+            guideList = {
+                "Email": "avielpalgi@gmail.com",
+                "list": list
+            }
+            ajaxCall("POST", "../../api/Guide/PostGuideLanguage", JSON.stringify(list), successCBPost, errorCBPost)
+        }
+
+        function puttGuide() {
+            guide = {
+                "Email": "avielpalgi@gmail.com",
+                "FirstName": "avi",
+                "LastName": "ccc",
+                "License": 44433,
+                "Gender": "male",
+                "BirthDay":'3/10/2020'
+            }
+            ajaxCall("PUT", "../../api/Guide", JSON.stringify(guide), successCBPut, errorCBPut)
+        }
+        function successCBPut(data) {
+            console.log(data);
+        }
+        function errorCBPut(err) {
+            console.log(err);
+
         }
         function successCBPost(data) {
             console.log(data);
@@ -36,10 +82,21 @@
         function errorCBPost(err) {
             console.log(err);
         }
+        $(function () {
+            $("#datepicker").datepicker();
+        });
+        console.log($("#datepicker").val())
+
     </script>
+  
 </head>
 
 <body>
     <button onclick="postGuide()">add Guide</button>
+    <button onclick="postGuideLang()">Post Lang Guide</button>
+    <button onclick="puttGuide()">Update Guide</button>
+    <h1>sdfsdfsdfsdfdsfsdfs</h1>
+    <p>Date: <input type="text" id="datepicker"></p>
+
 </body>
 </html>

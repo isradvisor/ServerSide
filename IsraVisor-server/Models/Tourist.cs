@@ -13,16 +13,24 @@ namespace IsraVisor_server.Models
         public string PasswordTourist { get; set; }
         public bool Gender { get; set; }
         public DateTime YearOfBirth { get; set; }
+        public string ProfilePic { get; set; }
+        public string InterestGender { get; set; }
+        public bool FirstTimeInIsrael { get; set; }
+        public int LanguageCode { get; set; }
 
-        internal List<Tourist> readTourist()
+        public List<Tourist> readTourist()
         {
             DBservices dbs = new DBservices();
             return dbs.readTourist();
         }
 
-        public string ProfilePic { get; set; }
-        public string InterestGender { get; set; }
-        public bool FirstTimeInIsrael { get; set; }
-        public int LanguageCode { get; set; }
+      
+
+        public int InsertTourist(Tourist tourist)
+        {
+            DBservices db = new DBservices();
+            return db.PostTouristToSQL(tourist);
+        }
+
     }
 }

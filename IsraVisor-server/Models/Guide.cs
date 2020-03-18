@@ -13,16 +13,22 @@ namespace IsraVisor_server.Models
         public string NickName { get; set; }
         public string Email { get; set; }
         public string DescriptionGuide { get; set; }
+        public string ProfilePic { get; set; }
+        public string Phone { get; set; }
+        public DateTime SignDate { get; set; }
+        public string PasswordGuide { get; set; }
+        public string Gender { get; set; }
+        public object BirthDay { get; set; }
+        public double Rank { get; set; }
+        public int gCode { get; set; }
 
-        internal List<Guide> ReadGuides()
+        public List<Guide> ReadGuides()
         {
             DBservices dbs = new DBservices();
             return dbs.ReadGuides();
         }
 
-        public string ProfilePic { get; set; }
-        public int Phone { get; set; }
-        public DateTime SignDate { get; set; }
+      
 
         public int PostGuideToSQL(Guide g)
         {
@@ -31,14 +37,14 @@ namespace IsraVisor_server.Models
             return numAffected;
         }
 
-        internal void UpdateGuide(Guide value)
+    
+        internal int UpdateGuideSQL(Guide g)
         {
-            throw new NotImplementedException();
+            DBservices db = new DBservices();
+            int numAffected = db.UpdateGuideSQL(g);
+            return numAffected;
         }
 
-        public string PasswordGuide { get; set; }
-        public bool Gender { get; set; }
-        public DateTime BirthDay { get; set; }
-        public float Rank { get; set; }
+      
     }
 }

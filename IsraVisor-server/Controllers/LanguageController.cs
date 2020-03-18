@@ -8,13 +8,21 @@ using System.Web.Http;
 
 namespace IsraVisor_server.Controllers
 {
-    public class TouristController : ApiController
+    public class LanguageController : ApiController
     {
         // GET api/<controller>
-        public List<Tourist> Get()
+        public List<Language> Get()
         {
-            Tourist t = new Tourist();
-            return t.readTourist();
+            Language l = new Language();
+            return l.ReadFromSQL();
+        }
+
+        [HttpGet]
+        [Route("api/Language/GetGuideLanguages")]
+        public List<Guide_Language> GetGuideLan()
+        {
+            Guide_Language guideLan = new Guide_Language();
+            return guideLan.ReadGuideLangsFromSQL();
         }
 
         // GET api/<controller>/5
@@ -24,12 +32,8 @@ namespace IsraVisor_server.Controllers
         }
 
         // POST api/<controller>
-        public void Post([FromBody]Tourist tour)
-        { 
-
-             Tourist t = new Tourist();
-              t.InsertTourist(tour);
-
+        public void Post([FromBody]string value)
+        {
         }
 
         // PUT api/<controller>/5
