@@ -435,8 +435,8 @@ public class DBservices
 
         StringBuilder sb = new StringBuilder();
         // use a string builder to create the dynamic string
-        sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}')", g.Email,g.PasswordGuide,g.FirstName,g.LastName,g.ProfilePic);
-        String prefix = "INSERT INTO GuideProject " + "(email,passwordGuide,firstName,LastName,profilePic)";
+        sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4},{5},'{6}','{7}',{8},'{9}')", g.Email,g.PasswordGuide,g.FirstName,g.LastName,g.ProfilePic,0,"","",1,"10/10/2020");
+        String prefix = "INSERT INTO GuideProject " + "(email,passwordGuide,firstName,LastName,profilePic,License,descriptionGuide,Phone,gender,BirthDay)";
         command = prefix + sb.ToString();
 
         return command;
@@ -449,7 +449,7 @@ public class DBservices
         StringBuilder sb = new StringBuilder();
         // use a string builder to create the dynamic string
         sb.AppendFormat("Values('{0}','{1}','{2}','{3}')", t.Email, t.PasswordTourist,t.FirstName,t.LastName);
-        String prefix = "INSERT INTO TouristProject " + "(email,passwordTourist,FirstName.LastName)";
+        String prefix = "INSERT INTO TouristProject " + "(email,passwordTourist,FirstName,LastName)";
         command = prefix + sb.ToString();
 
         return command;
