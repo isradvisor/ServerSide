@@ -56,6 +56,36 @@ public class DBservices
         }
     }
 
+    public void DeleteAllGuideLanguages(int guide_Code)
+    {
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "DELETE FROM guide_Language_Project where guidegCode = " + guide_Code;
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
     public List<Guide_Language> ReadGuideAllLanguagesFromSQL(int id)
     {
         List<Guide_Language> GuideLangs = new List<Guide_Language>();

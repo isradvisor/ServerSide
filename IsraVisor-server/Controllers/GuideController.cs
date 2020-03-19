@@ -33,10 +33,11 @@ namespace IsraVisor_server.Controllers
 
         [HttpPost]
         [Route("api/Guide/PostGuideLanguage")]
-        public void PostLanguage([FromBody]Guide_Language guideLan)
+        public List<Guide_Language> PostLanguage([FromBody]List<Guide_Language> guideLan)
         {
-            Guide_Language guideLnagu = new Guide_Language();
-            guideLnagu.PostLanguagesGuideToSQL(guideLan);
+            Guide_Language guideLnaguage = new Guide_Language();
+            return guideLnaguage.PostGuideLanguagesToSQL(guideLan);
+            //guideLnagu.PostLanguagesGuideToSQL(guideLan);
         }
 
         // PUT api/<controller>/5

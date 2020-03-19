@@ -11,8 +11,8 @@
     <title></title>
     <script>
         $(document).ready(function () {
-            //getGuide();
-            getGuideLang();
+            getGuide();
+            //getGuideLang();
         });
         function getGuideLang() {
             let num = 2;
@@ -47,10 +47,17 @@
         }
 
         function postGuideLang() {
-            list = {
+            var list = [];
+            one = {
                 "Guide_Code": 2,
                 "Language_Code": 2
-            }
+            };
+            list.push(one);
+          two =  {
+                "Guide_Code": 2,
+                "Language_Code": 4
+            };
+            list.push(two)
             guideList = {
                 "Email": "avielpalgi@gmail.com",
                 "list": list

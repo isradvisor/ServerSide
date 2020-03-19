@@ -29,5 +29,16 @@ namespace IsraVisor_server.Models
             DBservices db = new DBservices();
             return db.ReadGuideAllLanguagesFromSQL(id);
         }
+
+        public List<Guide_Language> PostGuideLanguagesToSQL(List<Guide_Language> guideLan)
+        {
+            DBservices db = new DBservices();
+            db.DeleteAllGuideLanguages(guideLan[0].Guide_Code);
+            for (int i = 0; i < guideLan.Count; i++)
+            {
+                db.PostGuideLanguagesToSQL(guideLan[i]);
+            }
+            return guideLan;
+        }
     }
 }
