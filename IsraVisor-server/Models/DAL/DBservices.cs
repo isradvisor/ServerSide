@@ -56,6 +56,220 @@ public class DBservices
         }
     }
 
+    public int PostGuideAreasToSQL(Guide_Area guide_Area)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertCommandGuideArea(guide_Area);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private string BuildInsertCommandGuideArea(Guide_Area guide_Area)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values({0},{1})", guide_Area.Guide_Code, guide_Area.Area_Code);
+        String prefix = "INSERT INTO guide_Area_Project " + "(guidegCode,areaCode)";
+        command = prefix + sb.ToString();
+
+        return command;
+    }
+
+    public void DeleteAllGuideAreas(int guide_Code)
+    {
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "DELETE FROM guide_Area_Project where guidegCode = " + guide_Code;
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public List<Guide_Area> GetAreasByGuideFromSQL(int id)
+    {
+        List<Guide_Area> GuideAreas = new List<Guide_Area>();
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "SELECT * FROM guide_Area_Project where guidegCode = " + id;
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                Guide_Area gArea = new Guide_Area();
+
+                gArea.Guide_Code = Convert.ToInt32(dr["guidegCode"]);
+                gArea.Area_Code = Convert.ToInt32(dr["areaCode"]);
+                GuideAreas.Add(gArea);
+            }
+
+            return GuideAreas;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public List<Area> GetAreasFromSQL()
+    {
+        List<Area> AreaList = new List<Area>();
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "SELECT * FROM Area_Project";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                Area City = new Area();
+                City.AreaName = (string)dr["areaName"];
+                AreaList.Add(City);
+            }
+
+            return AreaList;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public int PostCitiesToSQL(Area City)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertCitiesCommand(City);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+
+    }
+
+    private String BuildInsertCitiesCommand(Area City)
+    {
+        String command;
+       
+            command = @"INSERT INTO Area_Project (areaName) Values ('" + City.AreaName + "') ";
+        return command;
+    }
+
     public void DeleteAllGuideLanguages(int guide_Code)
     {
         SqlConnection con = null;

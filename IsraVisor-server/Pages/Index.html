@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+    <script src="AreaJson.js"></script>
     <script src="../Scripts/ajaxCalls.js"></script>
     <script src="../Scripts/jquery-3.3.1.min.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -11,13 +12,53 @@
     <title></title>
     <script>
         $(document).ready(function () {
-            getGuide();
+
+            GetAreas();
             //getGuideLang();
         });
         function getGuideLang() {
             let num = 2;
             ajaxCall("GET", "../../api/Guide/" + num, "", successCB, errorCB)
         }
+        function GetAreas() {
+            ajaxCall("GET", "../../api/Area" , "", successCBAreaGet, errorCBAreaGet)
+        }
+        function successCBAreaGet(data) {
+            console.log(data)
+            if (data.length == 0) {
+                postArea();
+            }
+            else {
+                console.log("not null")
+            }
+        }
+        function errorCBAreaGet(err) {
+            console.log(err)
+        }
+
+        function postArea() {
+            let ArrayAreaNames = [];
+            console.log(AreaList.result.records)
+            for (var i = 0; i < AreaList.result.records.length; i++) {
+                let element = {
+                    "AreaName": AreaList.result.records[i].Name
+                };
+                ArrayAreaNames.push(element);
+            }
+            console.log(ArrayAreaNames);
+
+            ajaxCall("POST", "../../api/Area", JSON.stringify(ArrayAreaNames), successCBPost, errorCBPost)
+
+
+        }
+        //function successCBGet(data) {
+        //    console.log(data);
+
+        //}
+        //function errorCBGEt(err) {
+        //    console.log(err);
+
+        //}
 
 
         function getGuide() {
@@ -89,16 +130,14 @@
         function errorCBPost(err) {
             console.log(err);
         }
-        $(function () {
-            $("#datepicker").datepicker();
-        });
-        console.log($("#datepicker").val())
+       
 
     </script>
   
 </head>
 
 <body>
+    <button onclick="getAreas()">GetArea</button>
     <button onclick="postGuide()">add Guide</button>
     <button onclick="postGuideLang()">Post Lang Guide</button>
     <button onclick="puttGuide()">Update Guide</button>

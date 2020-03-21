@@ -26,9 +26,10 @@ namespace IsraVisor_server.Controllers
         }
 
         // GET api/<controller>/5
-        public string Get(int id)
+        public List<Guide_Language> Get(int id)
         {
-            return "value";
+            Guide_Language g = new Guide_Language();
+            return g.ReadAllGuideLanguages(id);
         }
 
         // POST api/<controller>
