@@ -23,12 +23,26 @@ namespace IsraVisor_server.Controllers
             return "value";
         }
 
-        // POST api/<controller>
-        public void Post([FromBody]Tourist tour)
-        { 
+      
 
-             Tourist t = new Tourist();
-              t.InsertTourist(tour);
+        //Log In Check
+        // POST api/<controller>
+        public Tourist Post([FromBody]Tourist tourist)
+        {
+
+            Tourist t = new Tourist();
+            return t.LogIn(tourist);
+
+        }
+        //Log In Check
+        // POST api/<controller>/Register
+        [HttpPost]
+        [Route("api/Tourist/Register")]
+        public int Post2([FromBody]Tourist tourist)
+        {
+
+
+            return tourist.SignUp(tourist);
 
         }
 

@@ -11,8 +11,8 @@ namespace IsraVisor_server.Models
         public string LastName { get; set; }
         public string Email { get; set; }
         public string PasswordTourist { get; set; }
-        public bool Gender { get; set; }
-        public DateTime YearOfBirth { get; set; }
+        public string Gender { get; set; }
+        public string YearOfBirth { get; set; }
         public string ProfilePic { get; set; }
         public string InterestGender { get; set; }
         public bool FirstTimeInIsrael { get; set; }
@@ -24,12 +24,40 @@ namespace IsraVisor_server.Models
             return dbs.readTourist();
         }
 
-      
+
+
+        public Tourist LogIn(Tourist tourist)
+        {
+            DBservices db = new DBservices();
+            return db.LogInCheck(tourist);
+        }
+
+
 
         public int InsertTourist(Tourist tourist)
         {
             DBservices db = new DBservices();
             return db.PostTouristToSQL(tourist);
+        }
+
+
+        //0= db error
+        //1= sign up succeeded
+        //2 = email already use
+
+        public int SignUp(Tourist tourist)
+        {
+            DBservices db = new DBservices();
+            Tourist t = LogIn(tourist);
+            if (t.Email == null)
+            {
+                return db.SignUp(tourist);
+            }
+            else
+            {
+                return 2;
+            }
+
         }
 
     }

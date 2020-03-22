@@ -18,17 +18,18 @@ namespace IsraVisor_server.Controllers
         }
 
         // GET api/<controller>/5
-        public string Get(int id)
+        public Guide Get(string email)
         {
-            return "value";
+            Guide g = new Guide();
+           return g.GetGuideByEmail(email);
         }
 
      
         // POST api/<controller>
-        public void Post([FromBody]Guide g)
+        public Guide Post([FromBody]Guide g)
         {
             Guide g1 = new Guide();
-            g1.PostGuideToSQL(g);
+           return g1.PostGuideToSQL(g);
         }
 
         [HttpPost]

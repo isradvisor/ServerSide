@@ -8,12 +8,14 @@
     <link rel="stylesheet" href="/resources/demos/style.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="GuidesJson.js"></script>
+
     <meta charset="utf-8" />
     <title></title>
     <script>
         $(document).ready(function () {
 
-            GetAreas();
+            //GetAreas();
             //getGuideLang();
         });
         function getGuideLang() {
@@ -51,15 +53,40 @@
 
 
         }
-        //function successCBGet(data) {
-        //    console.log(data);
 
-        //}
-        //function errorCBGEt(err) {
-        //    console.log(err);
+        function GetDeatilsOfGuides() {
+            boolCheck = true;
+            var langtempArray = [];
+            var langTemp2 = [];
+            for (var i = 0; i < GuidesDetails.result.records.length; i++) {
+                let element = GuidesDetails.result.records[i];
+                console.log(element.Language);
+                let arrayElements = element.Language.split(";");
+                for (var j = 0; j < arrayElements.length; j++) {
+                    langtempArray.push(arrayElements[j]);
+                }
+            }
+                        let uniqueObject2 = {}; 
 
-        //}
-
+            for (var i = 0; i < langtempArray.length; i++) {
+                  // Extract the title 
+                objTitle2 = langtempArray[i]; 
+      
+                // Use the title as the index 
+                uniqueObject2[objTitle2] = langtempArray[i]; 
+            }
+           let newArray2 = []
+              for (i in uniqueObject2) { 
+                newArray2.push(uniqueObject2[i]); 
+            } 
+              
+            // Display the unique objects 
+            console.log(newArray2); 
+              // Create an array of objects 
+           
+            console.log(langtempArray);
+        }
+      
 
         function getGuide() {
             ajaxCall("GET", "../../api/Guide", "", successCB, errorCB)
@@ -137,12 +164,11 @@
 </head>
 
 <body>
+    <button onclick="GetDeatilsOfGuides()">GetGuides</button>
     <button onclick="getAreas()">GetArea</button>
     <button onclick="postGuide()">add Guide</button>
     <button onclick="postGuideLang()">Post Lang Guide</button>
     <button onclick="puttGuide()">Update Guide</button>
-    <h1>sdfsdfsdfsdfdsfsdfs</h1>
-    <p>Date: <input type="text" id="datepicker"></p>
 
 </body>
 </html>

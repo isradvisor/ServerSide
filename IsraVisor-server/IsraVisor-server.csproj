@@ -193,6 +193,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Pages\AreaJson.js" />
+    <Content Include="Pages\GuidesJson.js" />
     <Content Include="Pages\Index.html" />
     <Content Include="Scripts\ajaxCalls.js" />
     <Content Include="Scripts\bootstrap.js" />
