@@ -34,7 +34,7 @@ namespace IsraVisor_server.Controllers
             return t.LogIn(tourist);
 
         }
-        //Log In Check
+        //Sign In
         // POST api/<controller>/Register
         [HttpPost]
         [Route("api/Tourist/Register")]
