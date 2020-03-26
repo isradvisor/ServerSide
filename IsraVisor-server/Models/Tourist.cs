@@ -5,6 +5,7 @@ using System.Web;
 
 namespace IsraVisor_server.Models
 {
+    //tourist class
     public class Tourist
     {
         public string FirstName { get; set; }
