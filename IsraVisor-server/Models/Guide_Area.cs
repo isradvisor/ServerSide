@@ -24,7 +24,7 @@ namespace IsraVisor_server.Models
             {
                 db.PostGuideAreasToSQL(guide_AreasList[i]);
             }
-            return guide_AreasList;
+            return ReadAllAreasByGuide(guide_AreasList[0].Guide_Code);
         }
     }
 }

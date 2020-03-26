@@ -36,11 +36,15 @@ namespace IsraVisor_server.Models
 
       
 
-        public int PostGuideToSQL(Guide g)
+        public Guide PostGuideToSQL(Guide g)
         {
             DBservices db = new DBservices();
             int numAffected = db.PostGuideToSQL(g);
-            return numAffected;
+            if (numAffected == 1)
+            {
+                return db.GetGuideByEmailFromSQL(g.Email);
+            }
+            return null;
         }
 
     
@@ -61,13 +65,26 @@ namespace IsraVisor_server.Models
         {
             DBservices db = new DBservices();
            Guide tempGuide = db.GetGuideByEmailFromSQL(guideCheck.Email);
-            if (guideCheck.PasswordGuide == tempGuide.PasswordGuide)
+            if (guideCheck.FirstName == null) //check if click on sign in or other registration..
             {
+                if (guideCheck.PasswordGuide == tempGuide.PasswordGuide)
+                {
+                    return tempGuide;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                if (tempGuide.Email == null)
+                {
+                    return PostGuideToSQL(guideCheck);
+                }
                 return tempGuide;
             }
-            else {
-                return null;
-            }
+
         }
     }
 }

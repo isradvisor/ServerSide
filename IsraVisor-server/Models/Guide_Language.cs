@@ -38,7 +38,7 @@ namespace IsraVisor_server.Models
             {
                 db.PostGuideLanguagesToSQL(guideLan[i]);
             }
-            return guideLan;
+            return db.ReadGuideAllLanguagesFromSQL(guideLan[0].Guide_Code);
         }
     }
 }

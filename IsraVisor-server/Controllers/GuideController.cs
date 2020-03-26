@@ -26,17 +26,10 @@ namespace IsraVisor_server.Controllers
 
      
         // POST api/<controller>
-        public List<Guide> Post([FromBody]Guide g)
+        public Guide Post([FromBody]Guide g)
         {
             Guide g1 = new Guide();
-            if (g1.PostGuideToSQL(g) == 1)
-            {
-                return g1.ReadGuides();
-            }
-            else
-            {
-                return null;
-            }
+           return g1.PostGuideToSQL(g);
         }
 
         [HttpPost]

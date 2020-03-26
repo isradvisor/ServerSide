@@ -181,7 +181,6 @@ public class DBservices
                 guide.Phone = (string)(dr["phone"]);
                 guide.SignDate = Convert.ToDateTime(dr["SignDate"]).ToString("MM/dd/yyyy");
                 guide.BirthDay = Convert.ToDateTime(dr["BirthDay"]).ToString("MM/dd/yyyy");
-                //g.BirthDay = g.BirthDay.ToString();
                 bool genderGuide = Convert.ToBoolean(dr["gender"]);
                 if (genderGuide)
                 {
@@ -830,11 +829,20 @@ public class DBservices
 
     private String BuildInsertCommand(Guide g)
     {
+        int GenderGuider = 0;
+        if (g.Gender == "male" || g.Gender == "")
+        {
+            GenderGuider = 1;
+        }
+        else if (g.Gender == "female")
+        {
+            GenderGuider = 0;
+        }
         String command;
 
         StringBuilder sb = new StringBuilder();
         // use a string builder to create the dynamic string
-        sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}','{5}',{6},'{7}','{8}',{9},'{10}')", g.Email,g.PasswordGuide,g.FirstName,g.LastName,g.SignDate,g.ProfilePic,0,"","",1,"10/10/2020");
+        sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}','{5}',{6},'{7}','{8}',{9},'{10}')", g.Email,g.PasswordGuide,g.FirstName,g.LastName,g.SignDate,g.ProfilePic,0,"","", GenderGuider, g.BirthDay);
         String prefix = "INSERT INTO GuideProject " + "(email,passwordGuide,firstName,LastName,SignDate,profilePic,License,descriptionGuide,Phone,gender,BirthDay)";
         command = prefix + sb.ToString();
 
@@ -843,6 +851,7 @@ public class DBservices
 
     private String BuildInsertCommandTourist(Tourist t)
     {
+
         String command;
 
         StringBuilder sb = new StringBuilder();
