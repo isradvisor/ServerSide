@@ -18,6 +18,27 @@
             //GetAreas();
             //getGuideLang();
         });
+
+         function postTourist() {
+            Tourist = {
+                
+                "FirstName": "Goerge",
+                "LastName": "Cohen",
+                "Email": "Sivan583@gnail.com",
+                "PasswordTourist": "qqqq",
+                "Gender": "Female",
+                "YearOfBirth": "12-17-1993"
+
+            }
+            ajaxCall("Post", "../../api/Tourist/Register",  JSON.stringify(Tourist), successTourist, errorTourist)
+        }
+        function successTourist(data) {
+            console.log(data)
+        }
+
+        function errorTourist(data) {
+            console.log(data)
+        }
         function getGuideLang() {
             let num = 2;
             ajaxCall("GET", "../../api/Guide/" + num, "", successCB, errorCB)
@@ -169,6 +190,6 @@
     <button onclick="postGuide()">add Guide</button>
     <button onclick="postGuideLang()">Post Lang Guide</button>
     <button onclick="puttGuide()">Update Guide</button>
-
+    <button onclick="postTourist()">Post Tourist</button>
 </body>
 </html>

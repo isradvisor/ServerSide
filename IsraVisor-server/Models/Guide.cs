@@ -5,6 +5,7 @@ using System.Web;
 
 namespace IsraVisor_server.Models
 {
+    //class guide
     public class Guide
     {
         public int License { get; set; }

@@ -5,6 +5,7 @@ using System.Web;
 
 namespace IsraVisor_server.Models
 {
+    //tourist class
     public class Tourist
     {
         public string FirstName { get; set; }
@@ -38,6 +39,38 @@ namespace IsraVisor_server.Models
         {
             DBservices db = new DBservices();
             return db.PostTouristToSQL(tourist);
+        }
+
+
+        //0= db error
+        //1= sign up succeeded
+        //2 = email already use
+        public int SignUpFacebook(Tourist tourist)
+        {
+            DBservices db = new DBservices();
+            Tourist t = db.LogInFacebook(tourist);
+            if (t.Email == null)
+            {
+                return db.AddFacebookAccount(tourist);
+            }
+            else
+            {
+                return 2;
+            }
+        }
+        //
+        public int SignUpGoogle(Tourist tourist)
+        {
+            DBservices db = new DBservices();
+            Tourist t = db.LogInFacebook(tourist);
+            if (t.Email == null)
+            {
+                return db.AddGoogleAccount(tourist);
+            }
+            else
+            {
+                return 2;
+            }
         }
 
 
