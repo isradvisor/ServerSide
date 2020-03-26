@@ -46,6 +46,25 @@ namespace IsraVisor_server.Controllers
 
         }
 
+        [HttpPost]
+        [Route("api/Tourist/FacebookUser")]
+        public int Post3([FromBody]Tourist tourist)
+        {
+
+
+            return tourist.SignUpFacebook(tourist);
+
+        }
+
+        [HttpPost]
+        [Route("api/Tourist/GoogleUser")]
+        public int Post4([FromBody]Tourist tourist)
+        {
+
+
+            return tourist.SignUpGoogle(tourist);
+
+        }
         // PUT api/<controller>/5
         public void Put(int id, [FromBody]string value)
         {

@@ -56,6 +56,153 @@ public class DBservices
         }
     }
 
+    public Tourist LogInFacebook(Tourist tourist)
+    {
+        Tourist t = new Tourist();
+        SqlConnection con = null;
+        String selectSTR = "";
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            selectSTR = "select * from TouristProject where email = '" + (tourist.Email) + "' and passwordTourist is null";
+
+          
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                t.Email = (string)dr["email"];
+            }
+
+            return t;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public int AddGoogleAccount(Tourist tourist)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildGoogleAccountCommand(tourist);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private string BuildGoogleAccountCommand(Tourist t)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+
+
+        command = "INSERT INTO TouristProject (FirstName, LastName, email, ProfilePic) VALUES ('" + (t.FirstName) + "','" + (t.LastName) + "', '" + (t.Email) + "', '" + (t.ProfilePic) + "')";
+
+        return command;
+    }
+
+    public int AddFacebookAccount(Tourist tourist)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildFacebookAccountCommand(tourist);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private string BuildFacebookAccountCommand(Tourist t)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+
+
+        command = "INSERT INTO TouristProject (FirstName, email, ProfilePic) VALUES ('" + (t.FirstName) + "', '" + (t.Email) + "', '" + (t.ProfilePic) + "')";
+
+        return command;
+    }
+
     public int SignUp(Tourist tourist)
     {
         SqlConnection con;
@@ -113,12 +260,13 @@ public class DBservices
     {
         Tourist t = new Tourist();
         SqlConnection con = null;
-
+        String selectSTR = "";
         try
         {
             con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+          
+            selectSTR = "select * from TouristProject where email = '" + (tourist.Email) + "' and passwordTourist = '" + (tourist.PasswordTourist) + "'";
 
-            String selectSTR = "select * from TouristProject where email = '" + (tourist.Email) + "' and passwordTourist = '" + (tourist.PasswordTourist) + "'";
             SqlCommand cmd = new SqlCommand(selectSTR, con);
 
             // get a reader
