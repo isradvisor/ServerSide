@@ -26,10 +26,17 @@ namespace IsraVisor_server.Controllers
 
      
         // POST api/<controller>
-        public Guide Post([FromBody]Guide g)
+        public List<Guide> Post([FromBody]Guide g)
         {
             Guide g1 = new Guide();
-           return g1.PostGuideToSQL(g);
+            if (g1.PostGuideToSQL(g) == 1)
+            {
+                return g1.ReadGuides();
+            }
+            else
+            {
+                return null;
+            }
         }
 
         [HttpPost]
@@ -40,9 +47,17 @@ namespace IsraVisor_server.Controllers
             return guideLnaguage.PostGuideLanguagesToSQL(guideLan);
             //guideLnagu.PostLanguagesGuideToSQL(guideLan);
         }
+        //Post To Check log in
+        [HttpPost]
+        [Route("api/Guide/PostToCheck")]
+        public Guide CheckPost([FromBody]Guide guideCheck)
+        {
+            Guide checkGuide = new Guide();
+            return checkGuide.PostGuideToCheck(guideCheck);
+        }
 
         // PUT api/<controller>/5
-        public int Put([FromBody]Guide g)
+        public Guide Put([FromBody]Guide g)
         {
             Guide guide = new Guide();
             return(guide.UpdateGuideSQL(g));

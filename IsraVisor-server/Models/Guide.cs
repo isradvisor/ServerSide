@@ -36,10 +36,18 @@ namespace IsraVisor_server.Models
 
       
 
-        public Guide PostGuideToSQL(Guide g)
+        public int PostGuideToSQL(Guide g)
         {
             DBservices db = new DBservices();
             int numAffected = db.PostGuideToSQL(g);
+            return numAffected;
+        }
+
+    
+        public Guide UpdateGuideSQL(Guide g)
+        {
+            DBservices db = new DBservices();
+            int numAffected = db.UpdateGuideSQL(g);
             if (numAffected == 1)
             {
                 return db.GetGuideByEmailFromSQL(g.Email);
@@ -49,14 +57,17 @@ namespace IsraVisor_server.Models
             }
         }
 
-    
-        internal int UpdateGuideSQL(Guide g)
+        public Guide PostGuideToCheck(Guide guideCheck)
         {
             DBservices db = new DBservices();
-            int numAffected = db.UpdateGuideSQL(g);
-            return numAffected;
+           Guide tempGuide = db.GetGuideByEmailFromSQL(guideCheck.Email);
+            if (guideCheck.PasswordGuide == tempGuide.PasswordGuide)
+            {
+                return tempGuide;
+            }
+            else {
+                return null;
+            }
         }
-
-      
     }
 }
