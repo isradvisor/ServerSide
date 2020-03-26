@@ -57,7 +57,7 @@ namespace IsraVisor_server.Models
                 return 2;
             }
         }
-
+        //
         public int SignUpGoogle(Tourist tourist)
         {
             DBservices db = new DBservices();
