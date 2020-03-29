@@ -16,11 +16,131 @@ public class DBservices
 {
     public SqlDataAdapter da;
 
+    public IEnumerable<Hobby> GetAllHobbiesFromSQL()
+    {
+        List<Hobby> hobbieList = new List<Hobby>();
+        SqlConnection con = null;
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "SELECT * FROM Hobby_Project";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                Hobby hobby = new Hobby();
+                hobby.HName = (string)dr["HName"];
+                hobby.Picture = (string)dr["Picture"];
+                hobbieList.Add(hobby);
+            }
+            return hobbieList;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public int PostGuideHobbiesToSQL(Guide_Hobby guide_Hobby)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertGuideHobbiesCommand(guide_Hobby);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private string BuildInsertGuideHobbiesCommand(Guide_Hobby guide_Hobby)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values({0},{1})", guide_Hobby.guidegCode, guide_Hobby.HobbyHCode);
+        String prefix = "INSERT INTO guide_Hobby_Project " + "(guidegCode,HobbyHCode)";
+        command = prefix + sb.ToString();
+
+        return command;
+    }
+
+    public void DeleteAllGuideHobbies(int guidegCode)
+    {
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "DELETE FROM guide_Hobby_Project where guidegCode = " + guidegCode;
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
     public List<Language> ReadLanguagesFromSQL()
     {
         List<Language> LanguagesList = new List<Language>();
         SqlConnection con = null;
-
         try
         {
             con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
@@ -30,7 +150,6 @@ public class DBservices
 
             // get a reader
             SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
-
             while (dr.Read())
             {   // Read till the end of the data into a row
                 Language lan = new Language();
@@ -38,8 +157,176 @@ public class DBservices
                 lan.LNameEnglish = (string)dr["LNameEnglish"];
                 LanguagesList.Add(lan);
             }
-
             return LanguagesList;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public List<Guide_Hobby> GetGuideHobbies(int id)
+    {
+        List<Guide_Hobby> guideHobbies = new List<Guide_Hobby>();
+        SqlConnection con = null;
+        String selectSTR = "";
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            selectSTR = "select * from guide_Hobby_Project where guidegCode=" + id;
+
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {  // Read till the end of the data into a row
+                Guide_Hobby hobbie = new Guide_Hobby();
+                hobbie.guidegCode = Convert.ToInt32(dr["guidegCode"]);
+                hobbie.HobbyHCode = Convert.ToInt32(dr["HobbyHCode"]);
+                guideHobbies.Add(hobbie);
+            }
+
+            return guideHobbies;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+
+    }
+
+    public void deleteAllGuideLinks(int id)
+    {
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "DELETE FROM Link_Project where guidegCode = " + id;
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public int PostGuideListLinks(Link links)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertLinksCommand(links);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+    private string BuildInsertLinksCommand(Link l)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values({0},{1},'{2}')", l.guidegCode, l.LinksCategoryLCode,l.linkPath);
+        String prefix = "INSERT INTO Link_Project " + "(guidegCode,LinksCategoryLCode,linkPath)";
+        command = prefix + sb.ToString();
+
+        return command;
+    }
+
+    public List<Link> GetGuideLinksFromSQL(int id)
+    {
+        List<Link> listLinks = new List<Link>();
+        SqlConnection con = null;
+        String selectSTR = "";
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            selectSTR = "select * from Link_Project where guidegCode=" + id;
+
+
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {  // Read till the end of the data into a row
+                Link l = new Link();
+                l.guidegCode = Convert.ToInt32(dr["guidegCode"]);
+                l.LinkCode = Convert.ToInt32(dr["LinkCode"]);
+                l.LinksCategoryLCode = Convert.ToInt32(dr["LinksCategoryLCode"]);
+                l.linkPath = (string)(dr["linkPath"]);
+                listLinks.Add(l);
+            }
+
+            return listLinks;
         }
         catch (Exception ex)
         {

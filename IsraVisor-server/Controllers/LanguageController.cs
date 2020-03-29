@@ -42,9 +42,12 @@ namespace IsraVisor_server.Controllers
         {
         }
 
-        // DELETE api/<controller>/5
+        // DELETE: api/Student?id=5
+        [HttpDelete]
         public void Delete(int id)
         {
+            Guide_Language g = new Guide_Language();
+            g.DeleteGuideLanguages(id);
         }
     }
 }

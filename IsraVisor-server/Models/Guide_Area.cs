@@ -26,5 +26,11 @@ namespace IsraVisor_server.Models
             }
             return ReadAllAreasByGuide(guide_AreasList[0].Guide_Code);
         }
+
+        public void DeleteAllguideAreaList(int id)
+        {
+            DBservices db = new DBservices();
+            db.DeleteAllGuideAreas(id);
+        }
     }
 }

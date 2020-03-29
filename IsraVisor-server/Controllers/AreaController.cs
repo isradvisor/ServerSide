@@ -48,8 +48,11 @@ namespace IsraVisor_server.Controllers
         }
 
         // DELETE api/<controller>/5
+        [HttpDelete]
         public void Delete(int id)
         {
+            Guide_Area ga = new Guide_Area();
+            ga.DeleteAllguideAreaList(id);
         }
     }
 }
