@@ -10,13 +10,13 @@ namespace IsraVisor_server.Models
         public int guidegCode { get; set; }
         public int HobbyHCode { get; set; }
 
-        public List<Guide_Hobby> GetGuideHobbiesFromSQLBygCode(int id)
+        public List<Hobby> GetGuideHobbiesFromSQLBygCode(int id)
         {
             DBservices db = new DBservices();
             return db.GetGuideHobbies(id);
         }
 
-        public List<Guide_Hobby> PostGuideListHobbies(List<Guide_Hobby> guideHobbiesList)
+        public List<Hobby> PostGuideListHobbies(List<Guide_Hobby> guideHobbiesList)
         {
             DBservices db = new DBservices();
             db.DeleteAllGuideHobbies(guideHobbiesList[0].guidegCode);
@@ -25,6 +25,18 @@ namespace IsraVisor_server.Models
                 db.PostGuideHobbiesToSQL(guideHobbiesList[i]);
             }
             return db.GetGuideHobbies(guideHobbiesList[0].guidegCode);
+        }
+
+        //public List<Hobby> GetHobbiesNotSelected(int id)
+        //{
+        //    DBservices db = new DBservices();
+        //    db.GetHobbiesNotSelected
+        //}
+
+        public void DeleteGuideHobbies(int id)
+        {
+            DBservices db = new DBservices();
+            db.DeleteAllGuideHobbies(id);
         }
     }
 }

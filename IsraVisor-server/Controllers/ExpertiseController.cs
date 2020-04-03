@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IsraVisor_server.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -10,20 +11,24 @@ namespace IsraVisor_server.Controllers
     public class ExpertiseController : ApiController
     {
         // GET api/<controller>
-        public IEnumerable<string> Get()
+        public IEnumerable<Expertise> Get()
         {
-            return new string[] { "value1", "value2" };
+            Expertise ex = new Expertise();
+            return ex.GetAllExpertises();
         }
 
         // GET api/<controller>/5
-        public string Get(int id)
+        public List<Expertise> Get(int id)
         {
-            return "value";
+            Guide_Expertise ex = new Guide_Expertise();
+            return ex.GetGuideExpertises(id);
         }
 
         // POST api/<controller>
-        public void Post([FromBody]string value)
+        public List<Expertise> Post([FromBody]List<Guide_Expertise> ex)
         {
+            Guide_Expertise gExper = new Guide_Expertise();
+            return gExper.PostAllGuideExpertises(ex);
         }
 
         // PUT api/<controller>/5
@@ -34,6 +39,8 @@ namespace IsraVisor_server.Controllers
         // DELETE api/<controller>/5
         public void Delete(int id)
         {
+            Guide_Expertise g = new Guide_Expertise();
+            g.DeleteExpertisesGuide(id);
         }
     }
 }

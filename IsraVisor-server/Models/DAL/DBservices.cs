@@ -16,6 +16,90 @@ public class DBservices
 {
     public SqlDataAdapter da;
 
+    public void DeleteAllGuideExpertiseFromSQL(int id)
+    {
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "DELETE FROM guide_Expertise_Project where guidegCode = " + id;
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public int PostGuideExpertiseToSQL(Guide_Expertise guide_Expertise)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertGuideExpertisesCommand(guide_Expertise);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private string BuildInsertGuideExpertisesCommand(Guide_Expertise guide_Expertise)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values({0},{1})", guide_Expertise.guidegCode, guide_Expertise.ExpertiseCode);
+        String prefix = "INSERT INTO guide_Expertise_Project " + "(guidegCode,ExpertiseCode)";
+        command = prefix + sb.ToString();
+
+        return command;
+    }
+
     public IEnumerable<Hobby> GetAllHobbiesFromSQL()
     {
         List<Hobby> hobbieList = new List<Hobby>();
@@ -32,11 +116,92 @@ public class DBservices
             while (dr.Read())
             {   // Read till the end of the data into a row
                 Hobby hobby = new Hobby();
+                hobby.HCode = Convert.ToInt32(dr["HCode"]);
                 hobby.HName = (string)dr["HName"];
                 hobby.Picture = (string)dr["Picture"];
                 hobbieList.Add(hobby);
             }
             return hobbieList;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public List<Expertise> GetGuideExpertisesFromSQL(int id)
+    {
+        List<Expertise> ExpertiseList = new List<Expertise>();
+        SqlConnection con = null;
+        String selectSTR = "";
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            selectSTR = "select * from Expertise_Project e join guide_Expertise_Project g on e.Code = g.ExpertiseCode where g.guidegCode = " + id;
+
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {  // Read till the end of the data into a row
+                Expertise exper = new Expertise();
+                exper.Code = Convert.ToInt32(dr["Code"]);
+                exper.NameE = (string)dr["NameE"];
+                exper.Picture = (string)dr["Picture"];
+                ExpertiseList.Add(exper);
+            }
+
+            return ExpertiseList;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public IEnumerable<Expertise> GetAllExpertisesFromSQL()
+    {
+        List<Expertise> EXList = new List<Expertise>();
+        SqlConnection con = null;
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "SELECT * FROM Expertise_Project";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                Expertise ex = new Expertise();
+                ex.Code = Convert.ToInt32(dr["Code"]);
+                ex.NameE = (string)dr["NameE"];
+                ex.Picture = (string)dr["Picture"];
+                EXList.Add(ex);
+            }
+            return EXList;
         }
         catch (Exception ex)
         {
@@ -174,16 +339,16 @@ public class DBservices
         }
     }
 
-    public List<Guide_Hobby> GetGuideHobbies(int id)
+    public List<Hobby> GetGuideHobbies(int id)
     {
-        List<Guide_Hobby> guideHobbies = new List<Guide_Hobby>();
+        List<Hobby> hobbieList = new List<Hobby>();
         SqlConnection con = null;
         String selectSTR = "";
         try
         {
             con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
 
-            selectSTR = "select * from guide_Hobby_Project where guidegCode=" + id;
+            selectSTR = "select * from Hobby_Project h join guide_Hobby_Project g on h.HCode = g.HobbyHCode where g.guidegCode = " + id;
 
             SqlCommand cmd = new SqlCommand(selectSTR, con);
 
@@ -192,13 +357,14 @@ public class DBservices
 
             while (dr.Read())
             {  // Read till the end of the data into a row
-                Guide_Hobby hobbie = new Guide_Hobby();
-                hobbie.guidegCode = Convert.ToInt32(dr["guidegCode"]);
-                hobbie.HobbyHCode = Convert.ToInt32(dr["HobbyHCode"]);
-                guideHobbies.Add(hobbie);
+                Hobby hobby = new Hobby();
+                hobby.HCode = Convert.ToInt32(dr["HCode"]);
+                hobby.HName = (string)dr["HName"];
+                hobby.Picture = (string)dr["Picture"];
+                hobbieList.Add(hobby);
             }
 
-            return guideHobbies;
+            return hobbieList;
         }
         catch (Exception ex)
         {

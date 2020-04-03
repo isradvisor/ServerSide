@@ -100,15 +100,12 @@
               for (i in uniqueObject2) { 
                 newArray2.push(uniqueObject2[i]); 
             } 
-              
             // Display the unique objects 
             console.log(newArray2); 
               // Create an array of objects 
-           
             console.log(langtempArray);
         }
       
-
         function getGuide() {
             ajaxCall("GET", "../../api/Guide", "", successCB, errorCB)
         }

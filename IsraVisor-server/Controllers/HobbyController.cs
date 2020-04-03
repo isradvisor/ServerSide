@@ -18,14 +18,21 @@ namespace IsraVisor_server.Controllers
         }
 
         // GET api/<controller>/5
-        public List<Guide_Hobby> Get(int id)
+        public List<Hobby> Get(int id)
         {
             Guide_Hobby guideHobbies = new Guide_Hobby();
             return guideHobbies.GetGuideHobbiesFromSQLBygCode(id);
         }
 
+        //[HttpGet]
+        //[Route("api/Hobby/GetHobbiesNotSelect/id")]
+        //public List<Hobby> GetHobbiesNotSelect(int id)
+        //{
+        //    Guide_Hobby g = new Guide_Hobby();
+        //   //return g.GetHobbiesNotSelected(id);
+        //}
         // POST api/<controller>
-        public List<Guide_Hobby> Post([FromBody]List<Guide_Hobby> guideHobbiesList)
+        public List<Hobby> Post([FromBody]List<Guide_Hobby> guideHobbiesList)
         {
             Guide_Hobby guide = new Guide_Hobby();
             return guide.PostGuideListHobbies(guideHobbiesList);
@@ -38,8 +45,11 @@ namespace IsraVisor_server.Controllers
         }
 
         // DELETE api/<controller>/5
+        [HttpDelete]
         public void Delete(int id)
         {
+            Guide_Hobby g = new Guide_Hobby();
+            g.DeleteGuideHobbies(id);
         }
     }
 }
