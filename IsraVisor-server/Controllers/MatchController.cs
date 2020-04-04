@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IsraVisor_server.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -10,20 +11,47 @@ namespace IsraVisor_server.Controllers
     public class MatchController : ApiController
     {
         // GET api/<controller>
-        public IEnumerable<string> Get()
+        public List<Match> Get()
         {
-            return new string[] { "value1", "value2" };
+            Match m = new Match();
+            return m.GetGuidesDetails();
         }
 
         // GET api/<controller>/5
-        public string Get(int id)
+        public Match Get(int id)
         {
-            return "value";
+            Match m = new Match();
+            return m.GetGuideMatchDetailsByID(id);
+        }
+
+        //[HttpGet]
+        //[Route("api/Match/getMatch")]
+        //public List<Match> GetMatch()
+        //{
+        //    Match m = new Match();
+        //    return m.ConvertGuideToMatch();
+        //}
+
+        [HttpGet]
+        [Route("api/Match/calculateGuideBetweenGuides/{id}")]
+        public List<CalculateMatch> GetMatchCal(int id)
+        {
+            CalculateMatch m = new CalculateMatch();
+            return m.CalculateMatchBetweenGuideToAllGuides(id);
+        }
+        [HttpGet]
+        [Route("api/Match/calculateTouristBetweenGuides/{id}")]
+        public List<CalculateMatch> GetMatchCalTourist(int id)
+        {
+            CalculateMatch m = new CalculateMatch();
+            return m.CalculateMatchBetweenTouristToAllGuides(id);
         }
 
         // POST api/<controller>
         public void Post([FromBody]string value)
         {
+            Match m = new Match();
+            m.PostGuideMatch(value);
         }
 
         // PUT api/<controller>/5

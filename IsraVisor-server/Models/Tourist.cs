@@ -8,6 +8,7 @@ namespace IsraVisor_server.Models
     //aviel
     public class Tourist
     {
+        public int TouristID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
@@ -18,7 +19,8 @@ namespace IsraVisor_server.Models
         public string InterestGender { get; set; }
         public bool FirstTimeInIsrael { get; set; }
         public int LanguageCode { get; set; }
-
+        public List<int> Hobbies { get; set; }
+        public List<int> Expertises { get; set; }
         public List<Tourist> readTourist()
         {
             DBservices dbs = new DBservices();

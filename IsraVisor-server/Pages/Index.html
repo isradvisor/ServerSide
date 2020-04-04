@@ -18,7 +18,34 @@
             //GetAreas();
             //getGuideLang();
         });
+        function GetMatch() {
+            ajaxCall("GET", "../../api/Match", "", successCBMatchGet, errorCBMatchGet)
 
+        }
+        function GetMatchGuide() {
+            ajaxCall("GET", "../../api/Match/getMatch", "", successCBMatchGet, errorCBMatchGet)
+        }
+
+        function GetMatchGuideCal2Guides() {
+            let id = 106;
+
+            ajaxCall("GET", "../../api/Match/calculateGuideBetweenGuides/" + id, "", successCBMatchGet, errorCBMatchGet)
+        }
+
+        function GetMatchTouristCal2Guides() {
+            let id = 11;
+
+            ajaxCall("GET", "../../api/Match/calculateTouristBetweenGuides/" + id, "", successCBMatchGet, errorCBMatchGet)
+        }
+
+        function GetMatchByNum() {
+
+            var num = 106;
+            ajaxCall("GET", "../../api/Match/" + num, "", successCBMatchGet, errorCBMatchGet)
+
+        }
+        function successCBMatchGet(data) {console.log(data) }
+        function errorCBMatchGet(err) {console.log(err) }
          function postTourist() {
             Tourist = {
                 
@@ -182,6 +209,11 @@
 </head>
 
 <body>
+    <button onclick="GetMatchTouristCal2Guides()">Calculate Between Tourist To Guides</button>
+    <button onclick="GetMatchGuideCal2Guides()">CalCulate Between Guide To Guides</button>
+    <button onclick="GetMatchGuide()">Smart ELEMENT</button>
+    <button onclick="GetMatchByNum()">Match By Num</button>
+    <button onclick="GetMatch()">Get Match</button>
     <button onclick="GetDeatilsOfGuides()">GetGuides</button>
     <button onclick="getAreas()">GetArea</button>
     <button onclick="postGuide()">add Guide</button>

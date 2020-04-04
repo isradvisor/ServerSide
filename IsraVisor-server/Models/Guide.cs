@@ -22,7 +22,10 @@ namespace IsraVisor_server.Models
         public object BirthDay { get; set; }
         public double Rank { get; set; }
         public int gCode { get; set; }
-
+        public List<Guide_Expertise> gExpertises { get; set; }
+        public List<Guide_Hobby> gHobbies { get; set; }
+        public List<Guide_Language> gLanguages { get; set; }
+     
         public Guide GetGuideByEmail(string email)
         {
             DBservices db = new DBservices();

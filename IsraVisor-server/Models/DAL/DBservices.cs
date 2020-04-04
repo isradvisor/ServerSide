@@ -45,6 +45,479 @@ public class DBservices
 
         }
     }
+    public Guide GetSpecificGuideDetailsMatch(int id)
+    {
+        Guide guide = new Guide();
+        List<Guide_Language> listLan = new List<Guide_Language>();
+        List<Guide_Hobby> listHob = new List<Guide_Hobby>();
+        List<Guide_Expertise> listExper = new List<Guide_Expertise>();
+        bool First = true;
+        SqlConnection con = null;
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "select g.BirthDay,g.gCode,gl.LanguageLCode,gh.HobbyHCode,ge.ExpertiseCode from GuideProject g left join guide_Language_Project gl on g.gCode = gl.guidegCode left join guide_Hobby_Project gh on g.gCode = gh.guidegCode left join guide_Expertise_Project ge on g.gCode = ge.guidegCode where gCode = " + id;
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+
+                if (First)
+                {
+                    guide.gCode = Convert.ToInt32(dr["gCode"]);
+                    guide.BirthDay = Convert.ToDateTime(dr["BirthDay"]).ToString("MM/dd/yyyy");
+                   
+                    if (dr["LanguageLCode"] != System.DBNull.Value)
+                    {
+                        Guide_Language lan = new Guide_Language();
+                        lan.Guide_Code = Convert.ToInt32(dr["gCode"]);
+                        lan.Language_Code = Convert.ToInt32(dr["LanguageLCode"]);
+                        listLan.Add(lan);
+                        guide.gLanguages= listLan;
+                    }
+                    if (dr["HobbyHCode"] != System.DBNull.Value)
+                    {
+                        Guide_Hobby hob = new Guide_Hobby();
+                        hob.guidegCode = Convert.ToInt32(dr["gCode"]);
+                        hob.HobbyHCode = Convert.ToInt32(dr["HobbyHCode"]);
+                        listHob.Add(hob);
+                        guide.gHobbies = listHob;
+                    }
+                    if (dr["ExpertiseCode"] != System.DBNull.Value)
+                    {
+                        Guide_Expertise ge = new Guide_Expertise();
+                        ge.guidegCode = Convert.ToInt32(dr["gCode"]);
+                        ge.ExpertiseCode = Convert.ToInt32(dr["ExpertiseCode"]);
+                        listExper.Add(ge);
+                        guide.gExpertises = listExper;
+                    }
+
+                }
+                else
+                {
+                    bool existLang = false;
+                    bool existHob = false;
+                    bool existExper = false;
+                    for (int i = 0; i < guide.gLanguages.Count; i++)
+                    {
+                        int element = guide.gLanguages[i].Language_Code;
+                        if (element == Convert.ToInt32(dr["LanguageLCode"]))
+                        {
+                            existLang = true;
+                        }
+                    }
+                    if (!existLang)
+                    {
+                        if (dr["LanguageLCode"] != System.DBNull.Value)
+                        {
+                            Guide_Language lan = new Guide_Language();
+                            lan.Guide_Code = Convert.ToInt32(dr["gCode"]);
+                            lan.Language_Code = Convert.ToInt32(dr["LanguageLCode"]);
+                            listLan.Add(lan);
+                            guide.gLanguages = listLan;
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < guide.gHobbies.Count; i++)
+                        {
+                            int element = guide.gHobbies[i].HobbyHCode;
+                            if (element == Convert.ToInt32(dr["HobbyHCode"]))
+                            {
+                                existHob = true;
+                            }
+                        }
+                        if (!existHob)
+                        {
+                            if (dr["HobbyHCode"] != System.DBNull.Value)
+                            {
+                                Guide_Hobby hob = new Guide_Hobby();
+                                hob.guidegCode = Convert.ToInt32(dr["gCode"]);
+                                hob.HobbyHCode = Convert.ToInt32(dr["HobbyHCode"]);
+                                listHob.Add(hob);
+                                guide.gHobbies = listHob;
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < guide.gExpertises.Count; i++)
+                            {
+                                int element = guide.gExpertises[i].ExpertiseCode;
+                                if (element == Convert.ToInt32(dr["ExpertiseCode"]))
+                                {
+                                    existExper = true;
+                                }
+                            }
+                            if (!existExper)
+                            {
+                                if (dr["ExpertiseCode"] != System.DBNull.Value)
+                                {
+                                    Guide_Expertise ge = new Guide_Expertise();
+                                    ge.guidegCode = Convert.ToInt32(dr["gCode"]);
+                                    ge.ExpertiseCode = Convert.ToInt32(dr["ExpertiseCode"]);
+                                    listExper.Add(ge);
+                                    guide.gExpertises = listExper;
+                                }
+                            }
+                        }
+                    }
+                }
+                First = false;
+            }
+
+
+            return guide;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public List<Guide> GetGuidesDetailsMatch()
+    {
+        List<Guide> guideList = new List<Guide>();
+        SqlConnection con = null;
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "select g.BirthDay,g.gCode,gl.LanguageLCode,gh.HobbyHCode,ge.ExpertiseCode from GuideProject g left join guide_Language_Project gl on g.gCode = gl.guidegCode left join guide_Hobby_Project gh on g.gCode = gh.guidegCode left join guide_Expertise_Project ge on g.gCode = ge.guidegCode";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                if (guideList.Count == 0 || guideList.Last().gCode != Convert.ToInt32(dr["gCode"]))
+                {
+                    Guide guide = new Guide();
+                    guide.gCode = Convert.ToInt32(dr["gCode"]);
+                    guide.BirthDay = Convert.ToDateTime(dr["BirthDay"]).ToString("MM/dd/yyyy");
+                    List<Guide_Language> listLan = new List<Guide_Language>();
+                    List<Guide_Hobby> listHob = new List<Guide_Hobby>();
+                    List<Guide_Expertise> listExper = new List<Guide_Expertise>();
+                 
+                    if (dr["LanguageLCode"] != System.DBNull.Value)
+                    {
+                        Guide_Language lan = new Guide_Language();
+                        lan.Guide_Code = guide.gCode;
+                        lan.Language_Code = Convert.ToInt32(dr["LanguageLCode"]);
+                        listLan.Add(lan);
+                    }
+                    guide.gLanguages = listLan;
+
+                    if (dr["HobbyHCode"] != System.DBNull.Value)
+                    {
+                        Guide_Hobby hob = new Guide_Hobby();
+                        hob.guidegCode = guide.gCode;
+                        hob.HobbyHCode = Convert.ToInt32(dr["HobbyHCode"]);
+                        listHob.Add(hob);
+                    }
+
+                    guide.gHobbies = listHob;
+                   
+                    if (dr["ExpertiseCode"] != System.DBNull.Value)
+                    {
+                        Guide_Expertise ge = new Guide_Expertise();
+                        ge.guidegCode = guide.gCode;
+                        ge.ExpertiseCode = Convert.ToInt32(dr["ExpertiseCode"]);
+                        listExper.Add(ge);
+                    }
+                    guide.gExpertises = listExper;
+                    guideList.Add(guide);
+                }
+                else
+                {
+                    bool existLang = false;
+                    bool existHob = false;
+                    bool existExper = false;
+                    for (int i = 0; i < guideList.Last().gLanguages.Count; i++)
+                    {
+                        int element = guideList.Last().gLanguages[i].Language_Code;
+                        if (element == Convert.ToInt32(dr["LanguageLCode"]))
+                        {
+                            existLang = true;
+                        }
+                    }
+                    if (!existLang)
+                    {
+                        if (dr["LanguageLCode"] != System.DBNull.Value)
+                        {
+                            Guide_Language lan = new Guide_Language();
+                            lan.Guide_Code = Convert.ToInt32(dr["gCode"]);
+                            lan.Language_Code = Convert.ToInt32(dr["LanguageLCode"]);
+                            guideList.Last().gLanguages.Add(lan);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < guideList.Last().gHobbies.Count; i++)
+                        {
+                            int element = guideList.Last().gHobbies[i].HobbyHCode;
+                            if (element == Convert.ToInt32(dr["HobbyHCode"]))
+                            {
+                                existHob = true;
+                            }
+                        }
+                        if (!existHob)
+                        {
+                            if (dr["HobbyHCode"] != System.DBNull.Value)
+                            {
+                                Guide_Hobby hob = new Guide_Hobby();
+                                hob.guidegCode = Convert.ToInt32(dr["gCode"]);
+                                hob.HobbyHCode = Convert.ToInt32(dr["HobbyHCode"]);
+                                guideList.Last().gHobbies.Add(hob);
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < guideList.Last().gExpertises.Count; i++)
+                            {
+                                int element = guideList.Last().gExpertises[i].ExpertiseCode;
+                                if (element == Convert.ToInt32(dr["ExpertiseCode"]))
+                                {
+                                    existExper = true;
+                                }
+                            }
+                            if (!existExper)
+                            {
+                                if (dr["ExpertiseCode"] != System.DBNull.Value)
+                                {
+                                    Guide_Expertise ge = new Guide_Expertise();
+                                    ge.guidegCode = Convert.ToInt32(dr["gCode"]);
+                                    ge.ExpertiseCode = Convert.ToInt32(dr["ExpertiseCode"]);
+                                    guideList.Last().gExpertises.Add(ge);
+                                }
+                            }
+                        }
+                    }
+                  
+                }
+            }
+
+            return guideList;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+    public Tourist GetSpecificTouristMatchDetails(int id)
+    {
+        Tourist tourist = new Tourist();
+        List<int> listHob = new List<int>();
+        List<int> listExper = new List<int>();
+        bool First = true;
+        SqlConnection con = null;
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "select Id, yearOfBirth, LanguageLCode, HobbyHCode,ExpertiseCode from TouristProject t left join Tourist_Language_Project l on t.Id = l.IdTourist left join Hobby_Tourist_Project h on t.Id = h.TouristId left join Trip_Plan_Project tp on t.Id = tp.TouristId left join TripPlanIntrest_Project tpe on tp.IdPlan = tpe.IdPlan where Id=" + id;
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+
+                if (First)
+                {
+                     tourist.TouristID = Convert.ToInt32(dr["Id"]);
+                    tourist.YearOfBirth = Convert.ToDateTime(dr["yearOfBirth"]).ToString("MM/dd/yyyy");
+                    if (dr["LanguageLCode"] != System.DBNull.Value)
+                    {
+                        tourist.LanguageCode = Convert.ToInt32(dr["LanguageLCode"]);
+                    }
+
+                    if (dr["HobbyHCode"] != System.DBNull.Value)
+                    {
+                        listHob.Add(Convert.ToInt32(dr["HobbyHCode"]));
+                        tourist.Hobbies = listHob;
+                    }
+                    if (dr["ExpertiseCode"] != System.DBNull.Value)
+                    {
+                        listExper.Add(Convert.ToInt32(dr["ExpertiseCode"]));
+                        tourist.Expertises = listExper;
+                    }
+                }
+                else
+                {
+                    bool existHob = false;
+                    bool existExper = false;
+                        for (int i = 0; i < tourist.Hobbies.Count; i++)
+                        {
+                            int element = tourist.Hobbies[i];
+                            if (element == Convert.ToInt32(dr["HobbyHCode"]))
+                            {
+                                existHob = true;
+                            }
+                        }
+                        if (!existHob)
+                        {
+                        if (dr["HobbyHCode"] != System.DBNull.Value)
+                        {
+                            listHob.Add(Convert.ToInt32(dr["HobbyHCode"]));
+                            tourist.Hobbies = listHob;
+                        }
+                    }
+                        else
+                        {
+                            for (int i = 0; i < tourist.Expertises.Count; i++)
+                            {
+                                int element = tourist.Expertises[i];
+                                if (element == Convert.ToInt32(dr["ExpertiseCode"]))
+                                {
+                                    existExper = true;
+                                }
+                            }
+                            if (!existExper)
+                            {
+                            if (dr["ExpertiseCode"] != System.DBNull.Value)
+                            {
+                                listExper.Add(Convert.ToInt32(dr["ExpertiseCode"]));
+                                tourist.Expertises = listExper;
+                            }
+                        }
+                        }
+                }
+                First = false;
+            }
+            return tourist;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+    public List<Tourist> GetTouristsMatchDetails()
+    {
+        List<Tourist> touristList = new List<Tourist>();
+        SqlConnection con = null;
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "select Id, yearOfBirth, LanguageLCode, HobbyHCode,ExpertiseCode from TouristProject t left join Tourist_Language_Project l on t.Id = l.IdTourist left join Hobby_Tourist_Project h on t.Id = h.TouristId left join Trip_Plan_Project tp on t.Id = tp.TouristId left join TripPlanIntrest_Project tpe on tp.IdPlan = tpe.IdPlan";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                if (touristList.Count == 0 || touristList.Last().TouristID != Convert.ToInt32(dr["Id"]))
+                {
+                    Tourist tourist = new Tourist();
+                    tourist.TouristID = Convert.ToInt32(dr["Id"]);
+                    tourist.YearOfBirth = Convert.ToDateTime(dr["yearOfBirth"]).ToString("MM/dd/yyyy");
+                    List<int> listHob = new List<int>();
+                    List<int> listExper = new List<int>();
+                    if (dr["LanguageLCode"] != System.DBNull.Value)
+                    {
+                        tourist.LanguageCode = Convert.ToInt32(dr["LanguageLCode"]);
+                    }
+
+                    if (dr["HobbyHCode"] != System.DBNull.Value)
+                    {
+                        listHob.Add(Convert.ToInt32(dr["HobbyHCode"]));
+                    }
+                    tourist.Hobbies = listHob;
+                    if (dr["ExpertiseCode"] != System.DBNull.Value)
+                    {
+                        listExper.Add(Convert.ToInt32(dr["ExpertiseCode"]));
+                    }
+                    tourist.Expertises = listExper;
+                    touristList.Add(tourist);
+                }
+                else
+                {
+                    bool existHob = false;
+                    bool existExper = false;
+                   
+                        for (int i = 0; i < touristList.Last().Hobbies.Count; i++)
+                        {
+                            int element = touristList.Last().Hobbies[i];
+                            if (element == Convert.ToInt32(dr["HobbyHCode"]))
+                            {
+                                existHob = true;
+                            }
+                        }
+                        if (!existHob)
+                        {
+                            if (dr["HobbyHCode"] != System.DBNull.Value)
+                            {
+                            touristList.Last().Hobbies.Add(Convert.ToInt32(dr["HobbyHCode"]));
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < touristList.Last().Expertises.Count; i++)
+                            {
+                                int element = touristList.Last().Expertises[i];
+                                if (element == Convert.ToInt32(dr["ExpertiseCode"]))
+                                {
+                                    existExper = true;
+                                }
+                            }
+                            if (!existExper)
+                            {
+                                if (dr["ExpertiseCode"] != System.DBNull.Value)
+                                {
+                                touristList.Last().Expertises.Add(Convert.ToInt32(dr["ExpertiseCode"]));
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+            return touristList;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
 
     public int PostGuideExpertiseToSQL(Guide_Expertise guide_Expertise)
     {
