@@ -95,6 +95,90 @@ public class DBservices
         }
     }
 
+    public int TouristTripType(Tourist tourist)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr  = "INSERT INTO Trip_Plan_Project (TouristEmail, tripType) VALUES ('" + (tourist.Email) + "','" + (tourist.TripType) + "')";
+
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    public int FirstTimeInIsraelUPDATE(Tourist tourist)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = "UPDATE TouristProject SET FirstTimeInIsrael = '" + (tourist.FirstTimeInIsrael) + "' WHERE email = '" + (tourist.Email) + "'";
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+
     public int AddGoogleAccount(Tourist tourist)
     {
         SqlConnection con;
@@ -255,6 +339,43 @@ public class DBservices
         command = "INSERT INTO TouristProject (FirstName, LastName, email, passwordTourist, gender,yearOfBirth) VALUES ('" + (t.FirstName) + "', '" + (t.LastName) + "', '" + (t.Email) + "','" + (t.PasswordTourist) + "', '" + (t.Gender) + "', '" + (t.YearOfBirth) + "')";
 
         return command;
+    }
+    public Tourist CheckIfUserExist(Tourist tourist)
+    {
+        Tourist t = new Tourist();
+        SqlConnection con = null;
+        String selectSTR = "";
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            selectSTR = "select * from TouristProject where email = '" + (tourist.Email)  + "'";
+            
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                t.Email = (string)dr["email"];
+            }
+
+            return t;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
     }
     public Tourist LogInCheck(Tourist tourist)
     {

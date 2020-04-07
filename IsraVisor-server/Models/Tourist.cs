@@ -18,6 +18,8 @@ namespace IsraVisor_server.Models
         public string InterestGender { get; set; }
         public bool FirstTimeInIsrael { get; set; }
         public int LanguageCode { get; set; }
+        public string TripType { get; set; }
+
 
         public List<Tourist> readTourist()
         {
@@ -73,6 +75,18 @@ namespace IsraVisor_server.Models
             }
         }
 
+        public int TouristTripType(Tourist tourist)
+        {
+            DBservices db = new DBservices();
+            return db.TouristTripType(tourist);
+        }
+
+        public int FirstTimeInIsraelUPDATE(Tourist tourist)
+        {
+            DBservices db = new DBservices();
+            return db.FirstTimeInIsraelUPDATE(tourist);
+        }
+
 
         //0= db error
         //1= sign up succeeded
@@ -81,7 +95,7 @@ namespace IsraVisor_server.Models
         public int SignUp(Tourist tourist)
         {
             DBservices db = new DBservices();
-            Tourist t = LogIn(tourist);
+            Tourist t = db.CheckIfUserExist(tourist);
             if (t.Email == null)
             {
                 return db.SignUp(tourist);

@@ -24,13 +24,15 @@
                 
                 "FirstName": "Goerge",
                 "LastName": "Cohen",
-                "Email": "Sivan583@gnail.com",
+                "Email": "avielpalgi@gmail.com",
+                "FirstTimeInIsrael": "false",
                 "PasswordTourist": "qqqq",
                 "Gender": "Female",
-                "YearOfBirth": "12-17-1993"
+                "YearOfBirth": "12-17-1993",
+                "TripType": "Couple"
 
             }
-            ajaxCall("Post", "../../api/Tourist/Register",  JSON.stringify(Tourist), successTourist, errorTourist)
+            ajaxCall("POST", "../../api/Tourist/TripType",  JSON.stringify(Tourist), successTourist, errorTourist)
         }
         function successTourist(data) {
             console.log(data)

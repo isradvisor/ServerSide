@@ -45,7 +45,8 @@ namespace IsraVisor_server.Controllers
             return tourist.SignUp(tourist);
 
         }
-
+        //Sign In with facebook
+        // POST api/<controller>/FacebookUser
         [HttpPost]
         [Route("api/Tourist/FacebookUser")]
         public int Post3([FromBody]Tourist tourist)
@@ -55,7 +56,8 @@ namespace IsraVisor_server.Controllers
             return tourist.SignUpFacebook(tourist);
 
         }
-
+        //Sign In with google
+        // POST api/<controller>/GoogleUser
         [HttpPost]
         [Route("api/Tourist/GoogleUser")]
         public int Post4([FromBody]Tourist tourist)
@@ -65,11 +67,28 @@ namespace IsraVisor_server.Controllers
             return tourist.SignUpGoogle(tourist);
 
         }
-        // PUT api/<controller>/5
-        public void Put(int id, [FromBody]string value)
+
+        //What is your Trip Type Screen
+        // POST api/<controller>/TripType
+        [HttpPost]
+        [Route("api/Tourist/TripType")]
+        public int Post5([FromBody]Tourist tourist)
         {
+
+
+            return tourist.TouristTripType(tourist);
+
         }
 
+        //First Time in Israel Screen UPDATE (true or false)
+        // PUT api/<controller>/Register
+        [HttpPut]
+        [Route("api/Tourist/FirstTimeInIsrael")]
+        public int Put([FromBody]Tourist tourist)
+        {
+            return tourist.FirstTimeInIsraelUPDATE(tourist);
+        }
+       
         // DELETE api/<controller>/5
         public void Delete(int id)
         {
