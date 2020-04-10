@@ -48,6 +48,7 @@ namespace IsraVisor_server.Models
         {
             Match m = new Match();
             m.Id = g.gCode;
+            m.Rank = g.Rank;
             string o = g.BirthDay.ToString();
             char str = '/';
             string[] listTemp = o.Split(str);
@@ -88,6 +89,7 @@ namespace IsraVisor_server.Models
         public Match ConvertSpecificTourist(Tourist t)
         {
             Match m = new Match();
+            m.Rank = 0;
             m.Id = t.TouristID;
             string o = t.YearOfBirth;
             char str = '/';

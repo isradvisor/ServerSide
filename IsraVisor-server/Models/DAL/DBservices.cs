@@ -45,6 +45,44 @@ public class DBservices
 
         }
     }
+
+    public List<Guide_Tourist> GetAllRanksOfGuide(int id)
+    {
+        List<Guide_Tourist> gList = new List<Guide_Tourist>();
+        SqlConnection con = null;
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+            String selectSTR = "select * from Guide_Tourist_Project where guidegCode =" + id;
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                Guide_Tourist g = new Guide_Tourist();
+                g.Rank = Convert.ToInt32(dr["Rank"]);
+                g.TouristId = Convert.ToInt32(dr["Id"]);
+                g.guidegCode = Convert.ToInt32(dr["guidegCode"]);
+                gList.Add(g);
+            }
+            return gList;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
     public Guide GetSpecificGuideDetailsMatch(int id)
     {
         Guide guide = new Guide();
@@ -57,7 +95,7 @@ public class DBservices
         {
             con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
 
-            String selectSTR = "select g.BirthDay,g.gCode,gl.LanguageLCode,gh.HobbyHCode,ge.ExpertiseCode from GuideProject g left join guide_Language_Project gl on g.gCode = gl.guidegCode left join guide_Hobby_Project gh on g.gCode = gh.guidegCode left join guide_Expertise_Project ge on g.gCode = ge.guidegCode where gCode = " + id;
+            String selectSTR = "select g.BirthDay,g.gCode,gl.LanguageLCode,gh.HobbyHCode,ge.ExpertiseCode,Rank from GuideProject g left join guide_Language_Project gl on g.gCode = gl.guidegCode left join guide_Hobby_Project gh on g.gCode = gh.guidegCode left join guide_Expertise_Project ge on g.gCode = ge.guidegCode where gCode = " + id;
             SqlCommand cmd = new SqlCommand(selectSTR, con);
             // get a reader
             SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
@@ -69,7 +107,7 @@ public class DBservices
                 {
                     guide.gCode = Convert.ToInt32(dr["gCode"]);
                     guide.BirthDay = Convert.ToDateTime(dr["BirthDay"]).ToString("MM/dd/yyyy");
-                   
+                    guide.Rank = Convert.ToDouble(dr["Rank"]);
                     if (dr["LanguageLCode"] != System.DBNull.Value)
                     {
                         Guide_Language lan = new Guide_Language();
@@ -186,6 +224,41 @@ public class DBservices
         }
     }
 
+    public Guide_Tourist GetGuidesRankByID(int id)
+    {
+        Guide_Tourist g = new Guide_Tourist();
+        SqlConnection con = null;
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+            String selectSTR = "select * from Guide_Tourist_Project where TouristId =" + id;
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+               g.Rank = Convert.ToInt32(dr["Rank"]);
+                g.TouristId = Convert.ToInt32(dr["Id"]);
+                g.guidegCode = Convert.ToInt32(dr["guidegCode"]);
+            }
+            return g;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
     public List<Guide> GetGuidesDetailsMatch()
     {
         List<Guide> guideList = new List<Guide>();
@@ -194,7 +267,7 @@ public class DBservices
         {
             con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
 
-            String selectSTR = "select g.BirthDay,g.gCode,gl.LanguageLCode,gh.HobbyHCode,ge.ExpertiseCode from GuideProject g left join guide_Language_Project gl on g.gCode = gl.guidegCode left join guide_Hobby_Project gh on g.gCode = gh.guidegCode left join guide_Expertise_Project ge on g.gCode = ge.guidegCode";
+            String selectSTR = "select Rank, g.BirthDay,g.gCode,gl.LanguageLCode,gh.HobbyHCode,ge.ExpertiseCode from GuideProject g left join guide_Language_Project gl on g.gCode = gl.guidegCode left join guide_Hobby_Project gh on g.gCode = gh.guidegCode left join guide_Expertise_Project ge on g.gCode = ge.guidegCode";
             SqlCommand cmd = new SqlCommand(selectSTR, con);
             // get a reader
             SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
@@ -204,6 +277,7 @@ public class DBservices
                 if (guideList.Count == 0 || guideList.Last().gCode != Convert.ToInt32(dr["gCode"]))
                 {
                     Guide guide = new Guide();
+                    guide.Rank = Convert.ToDouble(dr["Rank"]);
                     guide.gCode = Convert.ToInt32(dr["gCode"]);
                     guide.BirthDay = Convert.ToDateTime(dr["BirthDay"]).ToString("MM/dd/yyyy");
                     List<Guide_Language> listLan = new List<Guide_Language>();
@@ -335,7 +409,7 @@ public class DBservices
         {
             con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
 
-            String selectSTR = "select Id, yearOfBirth, LanguageLCode, HobbyHCode,ExpertiseCode from TouristProject t left join Tourist_Language_Project l on t.Id = l.IdTourist left join Hobby_Tourist_Project h on t.Id = h.TouristId left join Trip_Plan_Project tp on t.Id = tp.TouristId left join TripPlanIntrest_Project tpe on tp.IdPlan = tpe.IdPlan where Id=" + id;
+            String selectSTR = "select Id, yearOfBirth, LanguageLCode, HobbyHCode,ExpertiseCode from TouristProject t left join Tourist_Language_Project l on t.Id = l.IdTourist left join Hobby_Tourist_Project h on t.Id = h.TouristId left join Trip_Plan_Project tp on t.email = tp.TouristEmail inner join TripPlanIntrest_Project tpe on tp.IdPlan = tpe.IdPlan where Id=" + id;
             SqlCommand cmd = new SqlCommand(selectSTR, con);
             // get a reader
             SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
@@ -350,6 +424,10 @@ public class DBservices
                     if (dr["LanguageLCode"] != System.DBNull.Value)
                     {
                         tourist.LanguageCode = Convert.ToInt32(dr["LanguageLCode"]);
+                    }
+                    else
+                    {
+                        tourist.LanguageCode = 0;
                     }
 
                     if (dr["HobbyHCode"] != System.DBNull.Value)
@@ -367,6 +445,8 @@ public class DBservices
                 {
                     bool existHob = false;
                     bool existExper = false;
+                    if (listHob.Count>0)
+                    {
                         for (int i = 0; i < tourist.Hobbies.Count; i++)
                         {
                             int element = tourist.Hobbies[i];
@@ -375,6 +455,8 @@ public class DBservices
                                 existHob = true;
                             }
                         }
+                    }
+                      
                         if (!existHob)
                         {
                         if (dr["HobbyHCode"] != System.DBNull.Value)
@@ -382,8 +464,10 @@ public class DBservices
                             listHob.Add(Convert.ToInt32(dr["HobbyHCode"]));
                             tourist.Hobbies = listHob;
                         }
-                    }
+                        }
                         else
+                        {
+                        if (listExper.Count>0)
                         {
                             for (int i = 0; i < tourist.Expertises.Count; i++)
                             {
@@ -393,6 +477,8 @@ public class DBservices
                                     existExper = true;
                                 }
                             }
+                        }
+                           
                             if (!existExper)
                             {
                             if (dr["ExpertiseCode"] != System.DBNull.Value)
@@ -429,7 +515,7 @@ public class DBservices
         {
             con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
 
-            String selectSTR = "select Id, yearOfBirth, LanguageLCode, HobbyHCode,ExpertiseCode from TouristProject t left join Tourist_Language_Project l on t.Id = l.IdTourist left join Hobby_Tourist_Project h on t.Id = h.TouristId left join Trip_Plan_Project tp on t.Id = tp.TouristId left join TripPlanIntrest_Project tpe on tp.IdPlan = tpe.IdPlan";
+            String selectSTR = "select Id, yearOfBirth, LanguageLCode, HobbyHCode,ExpertiseCode from TouristProject t left join Tourist_Language_Project l on t.Id = l.IdTourist left join Hobby_Tourist_Project h on t.Id = h.TouristId left join Trip_Plan_Project tp on t.email = tp.TouristEmail inner join TripPlanIntrest_Project tpe on tp.IdPlan = tpe.IdPlan";
             SqlCommand cmd = new SqlCommand(selectSTR, con);
             // get a reader
             SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end

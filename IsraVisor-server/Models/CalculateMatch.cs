@@ -10,25 +10,40 @@ namespace IsraVisor_server.Models
         public int Id1 { get; set; }
         public int Id2 { get; set; }
         public double Percents { get; set; }
+        double GuideRank = 20;
         double AgeMax = 5;
         double LanguagesMax = 30;
-        double HobbiesMax = 25;
-        double ExpertisesMax = 40;
+        double HobbiesMax = 30;
+        double ExpertisesMax = 35;
+        double Rank = 50;
 
         public List<CalculateMatch> CalculateMatchBetweenTouristToAllGuides(int id)
         {
             Match m = new Match();
             m = m.GetTouristMatchDetailsByID(id);
-            List<Match> AllGuides= m.GetGuidesDetails();
-            return Calculate(m, AllGuides);
+            List<Match> AllTourists = m.GetTouristDetails();
+            List<Match> AllGuides = m.GetGuidesDetails();
+            List<Guide_Tourist> listRanks = new List<Guide_Tourist>();
+            for (int i = 0; i < AllTourists.Count; i++)
+            {
+                Guide_Tourist g = new Guide_Tourist();
+               g = g.GetRankByID(AllTourists[i].Id);
+                if (g.Rank>0)
+                {
+                    listRanks.Add(g);
+                }
+            }
+            List<CalculateMatch> tempCal = Calculate(m, AllGuides, listRanks);
+            return tempCal;
         }
 
         public List<CalculateMatch> CalculateMatchBetweenGuideToAllGuides(int id)
         {
             Match m = new Match();
-            List<Match> AllGuides = m.GetGuidesDetails();
             m = m.GetGuideMatchDetailsByID(id);
-            return Calculate(m, AllGuides);
+            List<Match> AllGuides = m.GetGuidesDetails();
+            List<CalculateMatch> tempCal = Calculate(m, AllGuides,null);
+            return tempCal;
         }
 
         public List<CalculateMatch> CalculateMatchBetweenTouristToAllTourists(int id)
@@ -36,10 +51,23 @@ namespace IsraVisor_server.Models
             Match m = new Match();
             List<Match> AllTourists = m.GetTouristDetails();
             m = m.GetTouristMatchDetailsByID(id);
-            return Calculate(m, AllTourists);
+            List<CalculateMatch> tempCal = Calculate(m, AllTourists,null);
+            return tempCal;
+        }
+        public List<CalculateMatch> GetTop3(List<CalculateMatch> cal)
+        {
+            List<CalculateMatch> tempCal = new List<CalculateMatch>();
+          cal = cal.OrderBy(mCal => mCal.Percents).ToList();
+
+            for (int i = cal.Count-1; i >= cal.Count-4; i--)
+            {
+                tempCal.Add(cal[i]);
+            }
+            return tempCal;
         }
       
-        public List<CalculateMatch> Calculate(Match match, List<Match> Others)
+      
+        public List<CalculateMatch> Calculate(Match match, List<Match> Others, List<Guide_Tourist> ranksList)
         {
             List<CalculateMatch> CalList = new List<CalculateMatch>();
             DBservices db = new DBservices();
@@ -101,7 +129,28 @@ namespace IsraVisor_server.Models
                 CalculateMatch mCal = new CalculateMatch();
                 mCal.Id1 = match.Id;
                 mCal.Id2 = match2.Id;
-                mCal.Percents = rankLang + rankHobby + rankExpertise + Math.Ceiling(rankAge);
+                if (match2.Rank > 0)
+                {
+                    double tempPer = rankAge + rankLang + rankHobby + rankExpertise;
+                    mCal.Percents = (tempPer * (100 - GuideRank)/100) + (match2.Rank/5)*GuideRank;
+                }
+                else
+                {
+                    mCal.Percents = rankLang + rankHobby + rankExpertise + Math.Ceiling(rankAge);
+                }
+                if (ranksList != null && ranksList.Count>0)
+                {
+                    for (int j = 0; j < ranksList.Count; j++)
+                    {
+                        if (mCal.Id2 == ranksList[j].guidegCode)
+                        {
+                            double tempPercents = mCal.Percents/Rank;
+                            double tempRank = ranksList[j].Rank / 5 * Rank;
+                            mCal.Percents = tempPercents + tempRank;
+                            break;
+                        }
+                    }
+                }
                 CalList.Add(mCal);
             }
             return CalList;

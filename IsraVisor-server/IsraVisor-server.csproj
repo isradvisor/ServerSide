@@ -187,6 +187,7 @@
     <Compile Include="Models\Guide_Expertise.cs" />
     <Compile Include="Models\Guide_Hobby.cs" />
     <Compile Include="Models\Guide_Language.cs" />
+    <Compile Include="Models\Guide_Tourist.cs" />
     <Compile Include="Models\Hobby.cs" />
     <Compile Include="Models\Language.cs" />
     <Compile Include="Models\Link.cs" />

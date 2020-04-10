@@ -46,6 +46,13 @@ namespace IsraVisor_server.Controllers
             CalculateMatch m = new CalculateMatch();
             return m.CalculateMatchBetweenTouristToAllGuides(id);
         }
+        [HttpGet]
+        [Route("api/Match/calculateTouristBetweenTourists/{id}")]
+        public List<CalculateMatch> GetMatchCalTouristBetweenTourist(int id)
+        {
+            CalculateMatch m = new CalculateMatch();
+            return m.CalculateMatchBetweenTouristToAllTourists(id);
+        }
 
         // POST api/<controller>
         public void Post([FromBody]string value)

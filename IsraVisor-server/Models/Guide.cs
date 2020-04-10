@@ -86,7 +86,10 @@ namespace IsraVisor_server.Models
                 {
                     return PostGuideToSQL(guideCheck);
                 }
-                return tempGuide;
+                else
+                {
+                    return tempGuide;
+                }
             }
 
         }
