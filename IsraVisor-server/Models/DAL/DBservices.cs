@@ -15,7 +15,204 @@ using IsraVisor_server.Models;
 public class DBservices
 {
     public SqlDataAdapter da;
+    //GUIDE CLASS **************** GUIDE CLASS ****************
 
+    //GET ALL GUIDES
+    public List<Guide> ReadGuides()
+    {
+        List<Guide> guideList = new List<Guide>();
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "SELECT * FROM GuideProject";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                Guide g = new Guide();
+                g.gCode = Convert.ToInt32(dr["gCode"]);
+                g.Email = (string)dr["email"];
+                g.PasswordGuide = (string)dr["PasswordGuide"];
+                g.FirstName = (string)dr["firstName"];
+                g.LastName = (string)dr["LastName"];
+                g.ProfilePic = (string)dr["profilePic"];
+                g.License = Convert.ToInt32(dr["License"]);
+                g.DescriptionGuide = (string)dr["descriptionGuide"];
+                g.Phone = (string)(dr["phone"]);
+                g.SignDate = Convert.ToDateTime(dr["SignDate"]).ToString("MM/dd/yyyy");
+                g.BirthDay = Convert.ToDateTime(dr["BirthDay"]).ToString("MM/dd/yyyy");
+                //g.BirthDay = g.BirthDay.ToString();
+                bool genderGuide = Convert.ToBoolean(dr["gender"]);
+                if (genderGuide)
+                {
+                    g.Gender = "male";
+                }
+                else
+                {
+                    g.Gender = "female";
+                }
+                //g.Rank = Convert.ToDouble(dr["Rank"]);
+
+                guideList.Add(g);
+            }
+
+            return guideList;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+    //GET GUIDE BY EMAIL
+    public Guide GetGuideByEmailFromSQL(string email)
+    {
+        Guide guide = new Guide();
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "SELECT * FROM GuideProject where email ='" + email + "'";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                guide.gCode = Convert.ToInt32(dr["gCode"]);
+                guide.Email = (string)dr["email"];
+                guide.PasswordGuide = (string)dr["PasswordGuide"];
+                guide.FirstName = (string)dr["firstName"];
+                guide.LastName = (string)dr["LastName"];
+                guide.ProfilePic = (string)dr["profilePic"];
+                guide.License = Convert.ToInt32(dr["License"]);
+                guide.DescriptionGuide = (string)dr["descriptionGuide"];
+                guide.Phone = (string)(dr["phone"]);
+                guide.SignDate = Convert.ToDateTime(dr["SignDate"]).ToString("MM/dd/yyyy");
+                guide.BirthDay = Convert.ToDateTime(dr["BirthDay"]).ToString("MM/dd/yyyy");
+                bool genderGuide = Convert.ToBoolean(dr["gender"]);
+                if (genderGuide)
+                {
+                    guide.Gender = "male";
+                }
+                else
+                {
+                    guide.Gender = "female";
+                }
+                //g.Rank = Convert.ToDouble(dr["Rank"]);
+            }
+
+            return guide;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+    //POST GUIDE
+    public int PostGuideToSQL(Guide g)
+    {
+
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertCommand(g);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+    private String BuildInsertCommand(Guide g)
+    {
+        int GenderGuider = 0;
+        if (g.Gender == "male" || g.Gender == "")
+        {
+            GenderGuider = 1;
+        }
+        else if (g.Gender == "female")
+        {
+            GenderGuider = 0;
+        }
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}','{5}',{6},'{7}','{8}',{9},'{10}')", g.Email, g.PasswordGuide, g.FirstName, g.LastName, g.SignDate, g.ProfilePic, 0, "", "", GenderGuider, g.BirthDay);
+        String prefix = "INSERT INTO GuideProject " + "(email,passwordGuide,firstName,LastName,SignDate,profilePic,License,descriptionGuide,Phone,gender,BirthDay)";
+        command = prefix + sb.ToString();
+        return command;
+    }
+
+
+
+    //END GUIDE CLASS ****************END GUIDE CLASS ****************END GUIDE CLASS
+
+
+    //TOURIST CLASS
+
+
+    //AREA CLASS
+
+    //LANGUAGE CLASS
+
+    //HOBBY CLASS
+
+    //EXPERTISE CLASS
     public void DeleteAllGuideExpertiseFromSQL(int id)
     {
         SqlConnection con = null;
@@ -46,6 +243,113 @@ public class DBservices
         }
     }
 
+    public int UpdateRankGuide(int id, double sum)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildUpdateCommandRankGuide(id, sum);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private string BuildUpdateCommandRankGuide(int id, double sum)
+    {
+        String command = "";
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+      
+        command = "UPDATE GuideProject SET Rank =" + sum + " WHERE gCode = " + id ;
+        return command;
+
+    }
+
+    public int PostRankGuideByTourist(Guide_Tourist guide_Tourist)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertGuideTouristRank(guide_Tourist);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private string BuildInsertGuideTouristRank(Guide_Tourist g)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values({0},{1},{2},'{3}','{4}')", g.TouristId,g.guidegCode,g.Rank,g.DateOfRanking,g.Comment);
+        String prefix = "INSERT INTO Guide_Tourist_Project" + "(TouristId,guidegCode,Rank,DateOfRanking,Comment)";
+        command = prefix + sb.ToString();
+
+        return command;
+    }
+
     public List<Guide_Tourist> GetAllRanksOfGuide(int id)
     {
         List<Guide_Tourist> gList = new List<Guide_Tourist>();
@@ -62,7 +366,7 @@ public class DBservices
             {   // Read till the end of the data into a row
                 Guide_Tourist g = new Guide_Tourist();
                 g.Rank = Convert.ToInt32(dr["Rank"]);
-                g.TouristId = Convert.ToInt32(dr["Id"]);
+                g.TouristId = Convert.ToInt32(dr["TouristId"]);
                 g.guidegCode = Convert.ToInt32(dr["guidegCode"]);
                 gList.Add(g);
             }
@@ -239,7 +543,7 @@ public class DBservices
             while (dr.Read())
             {   // Read till the end of the data into a row
                g.Rank = Convert.ToInt32(dr["Rank"]);
-                g.TouristId = Convert.ToInt32(dr["Id"]);
+                g.TouristId = Convert.ToInt32(dr["TouristId"]);
                 g.guidegCode = Convert.ToInt32(dr["guidegCode"]);
             }
             return g;
@@ -277,7 +581,10 @@ public class DBservices
                 if (guideList.Count == 0 || guideList.Last().gCode != Convert.ToInt32(dr["gCode"]))
                 {
                     Guide guide = new Guide();
-                    guide.Rank = Convert.ToDouble(dr["Rank"]);
+                    if (dr["Rank"] != System.DBNull.Value)
+                    {
+                        guide.Rank = Convert.ToDouble(dr["Rank"]);
+                    }
                     guide.gCode = Convert.ToInt32(dr["gCode"]);
                     guide.BirthDay = Convert.ToDateTime(dr["BirthDay"]).ToString("MM/dd/yyyy");
                     List<Guide_Language> listLan = new List<Guide_Language>();
@@ -409,7 +716,7 @@ public class DBservices
         {
             con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
 
-            String selectSTR = "select Id, yearOfBirth, LanguageLCode, HobbyHCode,ExpertiseCode from TouristProject t left join Tourist_Language_Project l on t.Id = l.IdTourist left join Hobby_Tourist_Project h on t.Id = h.TouristId left join Trip_Plan_Project tp on t.email = tp.TouristEmail inner join TripPlanIntrest_Project tpe on tp.IdPlan = tpe.IdPlan where Id=" + id;
+            String selectSTR = "select Id, yearOfBirth, LanguageLCode, HobbyHCode,ExpertiseCode from TouristProject t left join Tourist_Language_Project l on t.Id = l.IdTourist left join Hobby_Tourist_Project h on t.Id = h.TouristId left join Trip_Plan_Project tp on t.email = tp.TouristEmail left join TripPlanIntrest_Project tpe on tp.IdPlan = tpe.IdPlan where Id=" + id;
             SqlCommand cmd = new SqlCommand(selectSTR, con);
             // get a reader
             SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
@@ -515,7 +822,7 @@ public class DBservices
         {
             con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
 
-            String selectSTR = "select Id, yearOfBirth, LanguageLCode, HobbyHCode,ExpertiseCode from TouristProject t left join Tourist_Language_Project l on t.Id = l.IdTourist left join Hobby_Tourist_Project h on t.Id = h.TouristId left join Trip_Plan_Project tp on t.email = tp.TouristEmail inner join TripPlanIntrest_Project tpe on tp.IdPlan = tpe.IdPlan";
+            String selectSTR = "select Id, yearOfBirth, LanguageLCode, HobbyHCode,ExpertiseCode from TouristProject t left join Tourist_Language_Project l on t.Id = l.IdTourist left join Hobby_Tourist_Project h on t.Id = h.TouristId left join Trip_Plan_Project tp on t.email = tp.TouristEmail left join TripPlanIntrest_Project tpe on tp.IdPlan = tpe.IdPlan";
             SqlCommand cmd = new SqlCommand(selectSTR, con);
             // get a reader
             SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
@@ -526,7 +833,10 @@ public class DBservices
                 {
                     Tourist tourist = new Tourist();
                     tourist.TouristID = Convert.ToInt32(dr["Id"]);
-                    tourist.YearOfBirth = Convert.ToDateTime(dr["yearOfBirth"]).ToString("MM/dd/yyyy");
+                    if (dr["yearOfBirth"] != System.DBNull.Value)
+                    {
+                        tourist.YearOfBirth = Convert.ToDateTime(dr["yearOfBirth"]).ToString("MM/dd/yyyy");
+                    }
                     List<int> listHob = new List<int>();
                     List<int> listExper = new List<int>();
                     if (dr["LanguageLCode"] != System.DBNull.Value)
@@ -1434,62 +1744,7 @@ public class DBservices
         }
     }
 
-    public Guide GetGuideByEmailFromSQL(string email)
-    {
-        Guide guide = new Guide();
-        SqlConnection con = null;
-
-        try
-        {
-            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
-
-            String selectSTR = "SELECT * FROM GuideProject where email ='" + email + "'";
-            SqlCommand cmd = new SqlCommand(selectSTR, con);
-
-            // get a reader
-            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
-
-            while (dr.Read())
-            {   // Read till the end of the data into a row
-                guide.gCode = Convert.ToInt32(dr["gCode"]);
-                guide.Email = (string)dr["email"];
-                guide.PasswordGuide = (string)dr["PasswordGuide"];
-                guide.FirstName = (string)dr["firstName"];
-                guide.LastName = (string)dr["LastName"];
-                guide.ProfilePic = (string)dr["profilePic"];
-                guide.License = Convert.ToInt32(dr["License"]);
-                guide.DescriptionGuide = (string)dr["descriptionGuide"];
-                guide.Phone = (string)(dr["phone"]);
-                guide.SignDate = Convert.ToDateTime(dr["SignDate"]).ToString("MM/dd/yyyy");
-                guide.BirthDay = Convert.ToDateTime(dr["BirthDay"]).ToString("MM/dd/yyyy");
-                bool genderGuide = Convert.ToBoolean(dr["gender"]);
-                if (genderGuide)
-                {
-                    guide.Gender = "male";
-                }
-                else
-                {
-                    guide.Gender = "female";
-                }
-                //g.Rank = Convert.ToDouble(dr["Rank"]);
-            }
-
-            return guide;
-        }
-        catch (Exception ex)
-        {
-            // write to log
-            throw (ex);
-        }
-        finally
-        {
-            if (con != null)
-            {
-                con.Close();
-            }
-
-        }
-    }
+    
 
     public int PostGuideAreasToSQL(Guide_Area guide_Area)
     {
@@ -2005,130 +2260,7 @@ public class DBservices
     }
 
    
-    public int PostGuideToSQL(Guide g)
-    {
-    
-            SqlConnection con;
-            SqlCommand cmd;
-
-            try
-            {
-                con = connect("ConnectionStringName"); // create the connection
-            }
-            catch (Exception ex)
-            {
-                // write to log
-                throw (ex);
-            }
-
-            String cStr = BuildInsertCommand(g);      // helper method to build the insert string
-
-            cmd = CreateCommand(cStr, con);             // create the command
-
-            try
-            {
-                int numEffected = cmd.ExecuteNonQuery(); // execute the command
-                return numEffected;
-            }
-            catch (Exception ex)
-            {
-                return 0;
-                // write to log
-                throw (ex);
-            }
-
-            finally
-            {
-                if (con != null)
-                {
-                    // close the db connection
-                    con.Close();
-                }
-            }
-    }
-
-    internal List<Guide> ReadGuides()
-    {
-        List<Guide> guideList = new List<Guide>();
-        SqlConnection con = null;
-
-        try
-        {
-            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
-
-            String selectSTR = "SELECT * FROM GuideProject";
-            SqlCommand cmd = new SqlCommand(selectSTR, con);
-
-            // get a reader
-            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
-
-            while (dr.Read())
-            {   // Read till the end of the data into a row
-                Guide g = new Guide();
-                g.gCode = Convert.ToInt32(dr["gCode"]);
-                g.Email = (string)dr["email"];
-                g.PasswordGuide = (string)dr["PasswordGuide"];
-                g.FirstName = (string)dr["firstName"];
-                g.LastName = (string)dr["LastName"];
-                g.ProfilePic = (string)dr["profilePic"];
-                g.License = Convert.ToInt32(dr["License"]);
-                g.DescriptionGuide = (string)dr["descriptionGuide"];
-                g.Phone = (string)(dr["phone"]);
-                g.SignDate = Convert.ToDateTime(dr["SignDate"]).ToString("MM/dd/yyyy");
-                g.BirthDay = Convert.ToDateTime(dr["BirthDay"]).ToString("MM/dd/yyyy");
-                //g.BirthDay = g.BirthDay.ToString();
-                bool genderGuide = Convert.ToBoolean(dr["gender"]);
-                if (genderGuide)
-                {
-                    g.Gender = "male";
-                }
-                else
-                {
-                    g.Gender = "female";
-                }
-                //g.Rank = Convert.ToDouble(dr["Rank"]);
-
-                guideList.Add(g);
-            }
-
-            return guideList;
-        }
-        catch (Exception ex)
-        {
-            // write to log
-            throw (ex);
-        }
-        finally
-        {
-            if (con != null)
-            {
-                con.Close();
-            }
-
-        }
-    }
-
-    private String BuildInsertCommand(Guide g)
-    {
-        int GenderGuider = 0;
-        if (g.Gender == "male" || g.Gender == "")
-        {
-            GenderGuider = 1;
-        }
-        else if (g.Gender == "female")
-        {
-            GenderGuider = 0;
-        }
-        String command;
-
-        StringBuilder sb = new StringBuilder();
-        // use a string builder to create the dynamic string
-        sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}','{5}',{6},'{7}','{8}',{9},'{10}')", g.Email,g.PasswordGuide,g.FirstName,g.LastName,g.SignDate,g.ProfilePic,0,"","", GenderGuider, g.BirthDay);
-        String prefix = "INSERT INTO GuideProject " + "(email,passwordGuide,firstName,LastName,SignDate,profilePic,License,descriptionGuide,Phone,gender,BirthDay)";
-        command = prefix + sb.ToString();
-
-        return command;
-    }
+   
 
     private String BuildInsertCommandTourist(Tourist t)
     {

@@ -16,6 +16,7 @@ namespace IsraVisor_server.Models
         double HobbiesMax = 30;
         double ExpertisesMax = 35;
         double Rank = 50;
+        double maxRank = 5;
 
         public List<CalculateMatch> CalculateMatchBetweenTouristToAllGuides(int id)
         {
@@ -144,8 +145,9 @@ namespace IsraVisor_server.Models
                     {
                         if (mCal.Id2 == ranksList[j].guidegCode)
                         {
-                            double tempPercents = mCal.Percents/Rank;
-                            double tempRank = ranksList[j].Rank / 5 * Rank;
+                            double tempPercents = mCal.Percents*Rank/100;
+                            double tempCalRank = ranksList[j].Rank / maxRank;
+                            double tempRank = tempCalRank * Rank;
                             mCal.Percents = tempPercents + tempRank;
                             break;
                         }

@@ -48,6 +48,13 @@ namespace IsraVisor_server.Controllers
             Guide checkGuide = new Guide();
             return checkGuide.PostGuideToCheck(guideCheck);
         }
+        [HttpPost]
+        [Route("api/Guide/Reset")]
+        public void Reset([FromBody]object email)
+        {
+            Guide checkGuide = new Guide();
+             checkGuide.ResetPassword(email);
+        }
 
         // PUT api/<controller>/5
         public Guide Put([FromBody]Guide g)

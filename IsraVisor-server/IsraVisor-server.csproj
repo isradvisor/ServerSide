@@ -170,6 +170,7 @@
     <Compile Include="Controllers\AreaController.cs" />
     <Compile Include="Controllers\ExpertiseController.cs" />
     <Compile Include="Controllers\GuideController.cs" />
+    <Compile Include="Controllers\Guide_TouristController.cs" />
     <Compile Include="Controllers\HobbyController.cs" />
     <Compile Include="Controllers\LanguageController.cs" />
     <Compile Include="Controllers\LinkController.cs" />

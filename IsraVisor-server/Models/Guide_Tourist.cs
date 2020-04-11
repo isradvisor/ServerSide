@@ -30,8 +30,15 @@ namespace IsraVisor_server.Models
                 sum += listRanks[i].Rank;
             }
             sum = sum / listRanks.Count;
+             db.UpdateRankGuide(id, sum);
             return sum;
         }
 
+        public void PostGuideTouristRank(Guide_Tourist guide_Tourist)
+        {
+            DBservices db = new DBservices();
+            db.PostRankGuideByTourist(guide_Tourist);
+            GetAllRanksOfGuide(guide_Tourist.guidegCode);
+        }
     }
 }

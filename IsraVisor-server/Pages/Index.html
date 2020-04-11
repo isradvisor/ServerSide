@@ -104,10 +104,7 @@
                 ArrayAreaNames.push(element);
             }
             console.log(ArrayAreaNames);
-
             ajaxCall("POST", "../../api/Area", JSON.stringify(ArrayAreaNames), successCBPost, errorCBPost)
-
-
         }
 
         function GetDeatilsOfGuides() {
@@ -210,13 +207,49 @@
         function errorCBPost(err) {
             console.log(err);
         }
-       
 
+        function guidesWebsite() {
+            var data = {
+                resource_id: '5f5afc43-639a-4216-8286-d146a8e048fe', // the resource id
+            };
+            $.ajax({
+                url: 'https://data.gov.il/api/action/datastore_search',
+                data: data,
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+
+
+
+        function insertRank() {
+
+            var Guide_Tourist = {
+                guidegCode: 106,
+                TouristId: 104,
+                Rank: 4,
+                DateOfRanking: "03-03-2020",
+                Comment:"Check"
+            }
+            ajaxCall("POST", "../../api/Guide_Tourist", JSON.stringify(Guide_Tourist), successCBPut, errorCBPut)
+
+        }
+        function GetRank() {
+
+          
+            ajaxCall("GET", "../../api/Guide_Tourist/" + 106, "", successCBPut, errorCBPut)
+
+        }
     </script>
   
 </head>
 
 <body>
+    <button onclick="GetRank()">Get RANK GUIDE</button>
+    <button onclick="insertRank()">INSERT RANK</button>
+    <button onclick="guidesWebsite()">Get Gudiessssssss</button>
     <button onclick="GetMatchTouristCal2Tourists()">Calculate Between Tourist To All Tourists</button>
     <button onclick="GetMatchTouristCal2Guides()">Calculate Between Tourist To Guides</button>
     <button onclick="GetMatchGuideCal2Guides()">CalCulate Between Guide To Guides</button>
