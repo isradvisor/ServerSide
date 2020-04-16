@@ -176,6 +176,7 @@
     <Compile Include="Controllers\LinkController.cs" />
     <Compile Include="Controllers\MatchController.cs" />
     <Compile Include="Controllers\TouristController.cs" />
+    <Compile Include="Controllers\UploadfilesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -194,6 +195,7 @@
     <Compile Include="Models\Link.cs" />
     <Compile Include="Models\LinkCategory.cs" />
     <Compile Include="Models\Match.cs" />
+    <Compile Include="Models\Response.cs" />
     <Compile Include="Models\Tourist.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

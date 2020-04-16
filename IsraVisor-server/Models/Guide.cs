@@ -83,8 +83,22 @@ namespace IsraVisor_server.Models
             {
                 smtp.Send(message);
             }
+            DBservices db = new DBservices();
+            db.ChangePass(randPass,g.gCode);
+        }
+
+        public void UpdatePic(string picPath, int id)
+        {
+            DBservices db = new DBservices();
+            db.UpdateGuidePicture(picPath, id);
+        }
+
+        public void PostPicture(object picture)
+        {
+            DBservices db = new DBservices();
 
         }
+
         // Generate a random password of a given length (optional)  
         public string RandomPassword(int size = 10)
         {

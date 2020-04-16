@@ -116,7 +116,10 @@ public class DBservices
                 {
                     guide.Gender = "female";
                 }
-                //g.Rank = Convert.ToDouble(dr["Rank"]);
+                if (dr["Rank"] != System.DBNull.Value)
+                {
+                    guide.Rank = Convert.ToDouble(dr["Rank"]);
+                }
             }
 
             return guide;
@@ -135,6 +138,112 @@ public class DBservices
 
         }
     }
+
+    public int UpdateGuidePicture(string picPath, int id)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildUpdatePictureGuide(picPath, id);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private string BuildUpdatePictureGuide(string picPath, int id)
+    {
+        String command = "";
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+
+        command = "UPDATE GuideProject SET profilePic = '" + picPath + "' WHERE gCode = " + id;
+        return command;
+    }
+
+    public int ChangePass(string randPass, int gCode)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildUpdatePassGuide(randPass, gCode);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private string BuildUpdatePassGuide(string randPass, int gCode)
+    {
+
+        String command = "";
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+
+        command = "UPDATE GuideProject SET passwordGuide = '" + randPass + "' WHERE gCode = " + gCode;
+        return command;
+    }
+
     //POST GUIDE
     public int PostGuideToSQL(Guide g)
     {
@@ -206,13 +315,176 @@ public class DBservices
     //TOURIST CLASS
 
 
-    //AREA CLASS
+    //AREA CLASS ***************************************************************************************************
+    //POST AREA GUIDE
+    public int PostGuideAreasToSQL(Guide_Area guide_Area)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
 
-    //LANGUAGE CLASS
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
 
-    //HOBBY CLASS
+        String cStr = BuildInsertCommandGuideArea(guide_Area);      // helper method to build the insert string
 
-    //EXPERTISE CLASS
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private string BuildInsertCommandGuideArea(Guide_Area guide_Area)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values({0},{1})", guide_Area.Guide_Code, guide_Area.Area_Code);
+        String prefix = "INSERT INTO guide_Area_Project " + "(guidegCode,areaCode)";
+        command = prefix + sb.ToString();
+
+        return command;
+    }
+    //LANGUAGE CLASS **************************************************************************
+    //POST LANGUAGE GUIDE
+    public int PostGuideLanguagesToSQL(Guide_Language guidesLanguages)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertCommandGuideLanguages(guidesLanguages);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private string BuildInsertCommandGuideLanguages(Guide_Language g)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values({0},{1})", g.Guide_Code, g.Language_Code);
+        String prefix = "INSERT INTO guide_Language_Project " + "(guidegCode,LanguageLCode)";
+        command = prefix + sb.ToString();
+
+        return command;
+    }
+
+    //HOBBY CLASS *****************************************************************
+
+    //EXPERTISE CLASS **********************************************************
+    //POST EXPERTISE GUIDE
+    public int PostGuideExpertiseToSQL(Guide_Expertise guide_Expertise)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertGuideExpertisesCommand(guide_Expertise);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private string BuildInsertGuideExpertisesCommand(Guide_Expertise guide_Expertise)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values({0},{1})", guide_Expertise.guidegCode, guide_Expertise.ExpertiseCode);
+        String prefix = "INSERT INTO guide_Expertise_Project " + "(guidegCode,ExpertiseCode)";
+        command = prefix + sb.ToString();
+
+        return command;
+    }
+
+
     public void DeleteAllGuideExpertiseFromSQL(int id)
     {
         SqlConnection con = null;
@@ -915,60 +1187,7 @@ public class DBservices
         }
     }
 
-    public int PostGuideExpertiseToSQL(Guide_Expertise guide_Expertise)
-    {
-        SqlConnection con;
-        SqlCommand cmd;
-
-        try
-        {
-            con = connect("ConnectionStringName"); // create the connection
-        }
-        catch (Exception ex)
-        {
-            // write to log
-            throw (ex);
-        }
-
-        String cStr = BuildInsertGuideExpertisesCommand(guide_Expertise);      // helper method to build the insert string
-
-        cmd = CreateCommand(cStr, con);             // create the command
-
-        try
-        {
-            int numEffected = cmd.ExecuteNonQuery(); // execute the command
-            return numEffected;
-        }
-        catch (Exception ex)
-        {
-            return 0;
-            // write to log
-            throw (ex);
-        }
-
-        finally
-        {
-            if (con != null)
-            {
-                // close the db connection
-                con.Close();
-            }
-        }
-    }
-
-    private string BuildInsertGuideExpertisesCommand(Guide_Expertise guide_Expertise)
-    {
-        String command;
-
-        StringBuilder sb = new StringBuilder();
-        // use a string builder to create the dynamic string
-        sb.AppendFormat("Values({0},{1})", guide_Expertise.guidegCode, guide_Expertise.ExpertiseCode);
-        String prefix = "INSERT INTO guide_Expertise_Project " + "(guidegCode,ExpertiseCode)";
-        command = prefix + sb.ToString();
-
-        return command;
-    }
-
+  
     public IEnumerable<Hobby> GetAllHobbiesFromSQL()
     {
         List<Hobby> hobbieList = new List<Hobby>();
@@ -1746,59 +1965,7 @@ public class DBservices
 
     
 
-    public int PostGuideAreasToSQL(Guide_Area guide_Area)
-    {
-        SqlConnection con;
-        SqlCommand cmd;
-
-        try
-        {
-            con = connect("ConnectionStringName"); // create the connection
-        }
-        catch (Exception ex)
-        {
-            // write to log
-            throw (ex);
-        }
-
-        String cStr = BuildInsertCommandGuideArea(guide_Area);      // helper method to build the insert string
-
-        cmd = CreateCommand(cStr, con);             // create the command
-
-        try
-        {
-            int numEffected = cmd.ExecuteNonQuery(); // execute the command
-            return numEffected;
-        }
-        catch (Exception ex)
-        {
-            return 0;
-            // write to log
-            throw (ex);
-        }
-
-        finally
-        {
-            if (con != null)
-            {
-                // close the db connection
-                con.Close();
-            }
-        }
-    }
-
-    private string BuildInsertCommandGuideArea(Guide_Area guide_Area)
-    {
-        String command;
-
-        StringBuilder sb = new StringBuilder();
-        // use a string builder to create the dynamic string
-        sb.AppendFormat("Values({0},{1})", guide_Area.Guide_Code, guide_Area.Area_Code);
-        String prefix = "INSERT INTO guide_Area_Project " + "(guidegCode,areaCode)";
-        command = prefix + sb.ToString();
-
-        return command;
-    }
+  
 
     public void DeleteAllGuideAreas(int guide_Code)
     {
@@ -2072,59 +2239,7 @@ public class DBservices
         }
     }
 
-    public int PostGuideLanguagesToSQL(Guide_Language guidesLanguages)
-    {
-        SqlConnection con;
-        SqlCommand cmd;
-
-        try
-        {
-            con = connect("ConnectionStringName"); // create the connection
-        }
-        catch (Exception ex)
-        {
-            // write to log
-            throw (ex);
-        }
-
-        String cStr = BuildInsertCommandGuideLanguages(guidesLanguages);      // helper method to build the insert string
-
-        cmd = CreateCommand(cStr, con);             // create the command
-
-        try
-        {
-            int numEffected = cmd.ExecuteNonQuery(); // execute the command
-            return numEffected;
-        }
-        catch (Exception ex)
-        {
-            return 0;
-            // write to log
-            throw (ex);
-        }
-
-        finally
-        {
-            if (con != null)
-            {
-                // close the db connection
-                con.Close();
-            }
-        }
-    }
-
-    private string BuildInsertCommandGuideLanguages(Guide_Language g)
-    {
-        String command;
-
-        StringBuilder sb = new StringBuilder();
-        // use a string builder to create the dynamic string
-        sb.AppendFormat("Values({0},{1})", g.Guide_Code, g.Language_Code);
-        String prefix = "INSERT INTO guide_Language_Project " + "(guidegCode,LanguageLCode)";
-        command = prefix + sb.ToString();
-
-        return command;
-    }
+   
 
     public DataTable dt;
 
