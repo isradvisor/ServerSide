@@ -999,7 +999,14 @@ public class DBservices
                 if (First)
                 {
                      tourist.TouristID = Convert.ToInt32(dr["Id"]);
-                    tourist.YearOfBirth = Convert.ToDateTime(dr["yearOfBirth"]).ToString("MM/dd/yyyy");
+                    if (dr["yearOfBirth"] != System.DBNull.Value)
+                    {
+                        tourist.YearOfBirth = Convert.ToDateTime(dr["yearOfBirth"]).ToString("MM/dd/yyyy");
+                    }
+                    else
+                    {
+                        tourist.YearOfBirth = "10/10/2020";
+                    }
                     if (dr["LanguageLCode"] != System.DBNull.Value)
                     {
                         tourist.LanguageCode = Convert.ToInt32(dr["LanguageLCode"]);

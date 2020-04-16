@@ -82,10 +82,12 @@ namespace IsraVisor_server.Models
                Match match2 = mList[i];
                 double num = Math.Abs(match.Age - match2.Age) + 1;
                 rankAge = 10 / num;
+                //רק אם הכניסו שפות לתייר/מדריך
                 if (match2.Language.Count > 0 || match.Language.Count>0)
                 {
                     for (int j = 0; j < match.Language.Count; j++)
                     {
+                        //בודק אם השפה של המדריך נמצאת במערך שפות של התייר
                         if (match2.Language.Contains(match.Language[j]))
                         {
                             rankLang += LanguagesMax;
@@ -93,10 +95,13 @@ namespace IsraVisor_server.Models
                         }
                     }
                 }
+
+                //בודק אם יש תחביב למדריך/תייר 
                 if (match2.Hobbies.Count > 0 || match.Hobbies.Count > 0)
                 {
                     for (int j = 0; j < match.Hobbies.Count; j++)
                     {
+                        //
                         if (match2.Hobbies.Contains(match.Hobbies[j]))
                         {
                             rankHobby += (HobbiesMax / match.Hobbies.Count);

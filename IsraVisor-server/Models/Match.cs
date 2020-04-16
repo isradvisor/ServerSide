@@ -13,7 +13,6 @@ namespace IsraVisor_server.Models
         public List<int> Expertises { get; set; }
         public double Rank { get; set; }
         public int Id { get; set; }
-
         public List<Match> GetGuidesDetails()
         {
             DBservices db = new DBservices();
@@ -91,7 +90,15 @@ namespace IsraVisor_server.Models
             Match m = new Match();
             m.Rank = 0;
             m.Id = t.TouristID;
-            string o = t.YearOfBirth;
+            string o = "";
+            if (t.YearOfBirth == null)
+            {
+                 o = "03/03/2020";
+            }
+            else
+            {
+                 o = t.YearOfBirth;
+            }
             char str = '/';
             string[] listTemp = o.Split(str);
             m.Age = int.Parse(listTemp[2]);
