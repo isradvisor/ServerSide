@@ -10,7 +10,8 @@ namespace IsraVisor_server.Models
         public int HCode { get; set; }
         public string HName { get; set; }
         public string Picture { get; set; }
-        
+        public string Type { get; set; }
+
         //מקבלת את כל התחביבים מהSQL
         public IEnumerable<Hobby> GetAllHobbies()
         {

@@ -584,6 +584,102 @@ public class DBservices
             }
         }
     }
+    //TOURIST BUDGET TRIP UPDATE
+    public int BudgetUPDATE(Tourist tourist)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+        string cStr;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        cStr = "UPDATE Trip_Plan_Project SET Budget = '" + (tourist.Budget) + "' WHERE TouristEmail = '" + (tourist.Email) + "'";
+
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+
+
+    //TOURIST FLIGHT DATES
+    public int FlightsDatesUpdate(Tourist tourist)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+        string cStr;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        if (tourist.FromDate == null && tourist.ToDate == null)
+        {
+            cStr = "UPDATE Trip_Plan_Project SET FromDate = NULL, ToDate = NULL, EstimateDate = '" + (tourist.EstimateDate) + "' WHERE TouristEmail = '" + (tourist.Email) + "'";
+
+        }
+        else
+        {
+            cStr = "UPDATE Trip_Plan_Project SET FromDate = '" + (tourist.FromDate) + "', ToDate = '" + (tourist.ToDate) + "', EstimateDate = NULL WHERE TouristEmail = '" + (tourist.Email) + "'";
+
+        }
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
 
     //TOURIST FIRST TIME IN ISRAEL
     public int FirstTimeInIsraelUPDATE(Tourist tourist)
@@ -759,6 +855,7 @@ public class DBservices
         try
         {
             int numEffected = cmd.ExecuteNonQuery(); // execute the command
+
             return numEffected;
         }
         catch (Exception ex)
@@ -790,6 +887,8 @@ public class DBservices
 
         return command;
     }
+
+    //check if tourist is already signed up
     public Tourist CheckIfUserExist(Tourist tourist)
     {
         Tourist t = new Tourist();
@@ -873,7 +972,132 @@ public class DBservices
 
         }
     }
+    public int Interest(int TouristID, int interestId, string table)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+        string cStr;
 
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        cStr = "INSERT INTO " + (table) + " (TouristId, " + (table == "Hobby_Tourist_Project" ? "HobbyHCode" : "ExpertiseCode") + ") VALUES (" + (TouristID) + "," + (interestId) + ")";
+
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+
+    //Post Tourist Language CODE To DB
+    public int PostTouristLanguageToDB(Tourist tourist)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = "INSERT INTO Tourist_Language_Project (IdTourist, LanguageLCode) VALUES (" + (tourist.TouristID) + "," + (tourist.LanguageCode) + ")";
+
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+
+    public int GetTouristId(Tourist tourist)
+    {
+        Tourist t = new Tourist();
+        SqlConnection con = null;
+        String selectSTR = "";
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            selectSTR = "select Id from TouristProject where email = '" + (tourist.Email) + "'";
+
+
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                t.TouristID = Convert.ToInt32(dr["Id"]);
+            }
+
+            return t.TouristID;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
 
     //Post Rank Of Guide By Tourist
     public int PostRankGuideByTourist(Guide_Tourist guide_Tourist)
@@ -1264,6 +1488,7 @@ public class DBservices
                 hobby.HCode = Convert.ToInt32(dr["HCode"]);
                 hobby.HName = (string)dr["HName"];
                 hobby.Picture = (string)dr["Picture"];
+                hobby.Type = (string)dr["Type"];
                 hobbieList.Add(hobby);
             }
             return hobbieList;
@@ -1437,6 +1662,7 @@ public class DBservices
                 ex.Code = Convert.ToInt32(dr["Code"]);
                 ex.NameE = (string)dr["NameE"];
                 ex.Picture = (string)dr["Picture"];
+                ex.Type = (string)dr["Type"];
                 EXList.Add(ex);
             }
             return EXList;
