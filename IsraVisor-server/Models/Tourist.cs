@@ -134,8 +134,8 @@ namespace IsraVisor_server.Models
 
 
         //0= db error
-        //1= sign up succeeded
-        //2 = email already use
+        //2= sign up succeeded
+        //3 = email already use
 
         public int SignUp(Tourist tourist)
         {
