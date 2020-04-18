@@ -1048,6 +1048,7 @@ public class DBservices
             // write to log
             throw (ex);
         }
+        
 
         finally
         {
