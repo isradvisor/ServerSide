@@ -9,7 +9,7 @@ namespace IsraVisor_server.Models
     {
         public string LName { get; set; }
         public string LNameEnglish { get; set; }
-
+        public int LCode { get; set; }
         //מקבלת את כל השפות מהSQL
         public List<Language> ReadFromSQL()
         {

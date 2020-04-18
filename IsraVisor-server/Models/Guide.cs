@@ -89,6 +89,31 @@ namespace IsraVisor_server.Models
             DBservices db = new DBservices();
             db.ChangePass(randPass,g.gCode);
         }
+        
+        //מכניס מדריך מאתר משרד התיירות
+        public Guide PostGuideFromGov(Guide g)
+        {
+            DBservices db = new DBservices();
+            Guide tempGuide = db.GetGuideByLicenseNum(g.License);
+            if (tempGuide.FirstName == null) //בודק אם נרשם בעבר
+            {
+                int num = db.PostGuideToSQLFromGovIL(g);
+                if (num == 1)
+                {
+                    return GetGuideByEmail(g.Email);
+
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return tempGuide;
+            }
+         
+        }
 
         //מעדכנת תמונת פרופיל
         public void UpdatePic(string picPath, int id)

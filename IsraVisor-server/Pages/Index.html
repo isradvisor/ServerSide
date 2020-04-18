@@ -217,10 +217,16 @@
                 dataType: 'json',
                 success: function (data) {
                     console.log(data);
+                    insertGuideFromGovIL(data.result.records)
                 }
             });
         }
+        function insertGuideFromGovIL(data) {
+            console.log(data);
+            var License_Number = 7468;
 
+
+        }
 
 
         function insertRank() {

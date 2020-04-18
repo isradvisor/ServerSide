@@ -71,6 +71,14 @@ namespace IsraVisor_server.Controllers
             g.UpdatePic(GuidepicAndId.picPath, GuidepicAndId.id);
         }
 
+        //מכניס מדריך מאתר משרד התיירות
+        [HttpPost]
+        [Route("api/Guide/PostGuideFromGovIL")]
+        public Guide PostGuideFromGov(Guide g)
+        {
+            Guide guide = new Guide();
+           return guide.PostGuideFromGov(g);
+        }
         [HttpPost]
         [Route("api/Guide/PostPic")]
         public HttpResponseMessage Post()

@@ -139,6 +139,124 @@ public class DBservices
         }
     }
 
+    public Guide GetGuideByLicenseNum(int license)
+    {
+        Guide guide = new Guide();
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "SELECT * FROM GuideProject where License ='" + license + "'";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                guide.gCode = Convert.ToInt32(dr["gCode"]);
+                guide.Email = (string)dr["email"];
+                guide.PasswordGuide = (string)dr["PasswordGuide"];
+                guide.FirstName = (string)dr["firstName"];
+                guide.LastName = (string)dr["LastName"];
+                guide.ProfilePic = (string)dr["profilePic"];
+                guide.License = Convert.ToInt32(dr["License"]);
+                guide.DescriptionGuide = (string)dr["descriptionGuide"];
+                guide.Phone = (string)(dr["phone"]);
+                guide.SignDate = Convert.ToDateTime(dr["SignDate"]).ToString("MM/dd/yyyy");
+                guide.BirthDay = Convert.ToDateTime(dr["BirthDay"]).ToString("MM/dd/yyyy");
+                bool genderGuide = Convert.ToBoolean(dr["gender"]);
+                if (genderGuide)
+                {
+                    guide.Gender = "male";
+                }
+                else
+                {
+                    guide.Gender = "female";
+                }
+                if (dr["Rank"] != System.DBNull.Value)
+                {
+                    guide.Rank = Convert.ToDouble(dr["Rank"]);
+                }
+            }
+
+            return guide;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    //מכניס מדריך ממשרד התיירות
+    public int PostGuideToSQLFromGovIL(Guide g)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertGovCommand(g);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private string BuildInsertGovCommand(Guide g)
+    {
+        int Gender = 1;
+        string Password = "GovIL" + g.FirstName;
+        g.ProfilePic = "";
+        g.BirthDay = g.SignDate;
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}','{5}',{6},'{7}','{8}',{9},'{10}')", g.Email, Password, g.FirstName, g.LastName, g.SignDate, g.ProfilePic, g.License, "", g.Phone, Gender, g.BirthDay);
+        String prefix = "INSERT INTO GuideProject " + "(email,passwordGuide,firstName,LastName,SignDate,profilePic,License,descriptionGuide,Phone,gender,BirthDay)";
+        command = prefix + sb.ToString();
+        return command;
+    }
+
     //Update Guide ProfilePic
     public int UpdateGuidePicture(string picPath, int id)
     {
@@ -1096,6 +1214,7 @@ public class DBservices
                 Language lan = new Language();
                 lan.LName = (string)dr["LName"];
                 lan.LNameEnglish = (string)dr["LNameEnglish"];
+                lan.LCode = Convert.ToInt32(dr["LCode"]);
                 LanguagesList.Add(lan);
             }
             return LanguagesList;
