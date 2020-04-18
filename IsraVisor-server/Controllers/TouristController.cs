@@ -17,13 +17,7 @@ namespace IsraVisor_server.Controllers
             return t.readTourist();
         }
 
-        // GET api/<controller>/5
-        public string Get(int id)
-        {
-            return "value";
-        }
 
-      
 
         //Log In Check
         // POST api/<controller>
@@ -80,6 +74,18 @@ namespace IsraVisor_server.Controllers
 
         }
 
+        //What is the user's interest (expertises & hobbies)
+        // POST api/<controller>/Interest
+        [HttpPost]
+        [Route("api/Tourist/Interest")]
+        public int Post6([FromBody]Tourist tourist)
+        {
+
+
+            return tourist.Interest(tourist);
+
+        }
+
         //First Time in Israel Screen UPDATE (true or false)
         // PUT api/<controller>/Register
         [HttpPut]
@@ -88,7 +94,25 @@ namespace IsraVisor_server.Controllers
         {
             return tourist.FirstTimeInIsraelUPDATE(tourist);
         }
-       
+
+        //Flights Dates UPDATE (FromDate, EndDate / EstimateDate)
+        // PUT api/<controller>/FlightsDates
+        [HttpPut]
+        [Route("api/Tourist/FlightsDates")]
+        public int Put2([FromBody]Tourist tourist)
+        {
+            return tourist.FlightsDates(tourist);
+        }
+
+        //Budget UPDATE (string)
+        // PUT api/<controller>/Budget
+        [HttpPut]
+        [Route("api/Tourist/Budget")]
+        public int Put3([FromBody]Tourist tourist)
+        {
+            return tourist.SetBudget(tourist);
+        }
+
         // DELETE api/<controller>/5
         public void Delete(int id)
         {
