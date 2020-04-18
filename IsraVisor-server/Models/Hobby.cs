@@ -11,6 +11,7 @@ namespace IsraVisor_server.Models
         public string HName { get; set; }
         public string Picture { get; set; }
         
+        //מקבלת את כל התחביבים מהSQL
         public IEnumerable<Hobby> GetAllHobbies()
         {
             DBservices db = new DBservices();

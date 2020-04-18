@@ -13,6 +13,8 @@ namespace IsraVisor_server.Models
         public List<int> Expertises { get; set; }
         public double Rank { get; set; }
         public int Id { get; set; }
+
+        //מקבלת רשימה של כל המדריכים ע"פ פורמט ההשוואה של מחלקת הנירמול
         public List<Match> GetGuidesDetails()
         {
             DBservices db = new DBservices();
@@ -26,6 +28,7 @@ namespace IsraVisor_server.Models
             return listMatch;
         }
 
+        //מקבלת מדריך ספציפי ע"פ פורמט ההשוואה של מחלקת הנירמול
         public Match GetGuideMatchDetailsByID(int id)
         {
             DBservices db = new DBservices();
@@ -34,6 +37,8 @@ namespace IsraVisor_server.Models
             m = m.ConvertSepcificGuide(g);
             return m;
         }
+
+        //מקבלת תייר ספציפי ע"פ פורמט ההשוואה של מחלקת הנירמול
         public Match GetTouristMatchDetailsByID(int id)
         {
             DBservices db = new DBservices();
@@ -43,35 +48,49 @@ namespace IsraVisor_server.Models
             return m;
         }
        
+        //מנרמל מדריך ספציפי לפורמט ההשוואה בין תיירים/מדריכים
         public Match ConvertSepcificGuide(Guide g)
         {
             Match m = new Match();
             m.Id = g.gCode;
             m.Rank = g.Rank;
+
+            //הופכת תאריך לידה למספר שנה למטרת השוואת גילאים
             string o = g.BirthDay.ToString();
             char str = '/';
             string[] listTemp = o.Split(str);
             m.Age = int.Parse(listTemp[2]);
+            //תאריך לידה
+
+            //מוסיף את רשימת השפות של המדריך
             List<int> langArray = new List<int>();
-            List<int> HobArray = new List<int>();
-            List<int> ExperArray = new List<int>();
             for (int i = 0; i < g.gLanguages.Count; i++)
             {
                 langArray.Add(g.gLanguages[i].Language_Code);
             }
+            m.Language = langArray;
+
+            //מוסיף את רשימת התחביבים של המדריך
+            List<int> HobArray = new List<int>();
             for (int i = 0; i < g.gHobbies.Count; i++)
             {
                 HobArray.Add(g.gHobbies[i].HobbyHCode);
             }
+            m.Hobbies = HobArray;
+
+            //מוסיף את רשימת ההתמחויות של המדריך
+            List<int> ExperArray = new List<int>();           
             for (int i = 0; i < g.gExpertises.Count; i++)
             {
                 ExperArray.Add(g.gExpertises[i].ExpertiseCode);
             }
-            m.Language = langArray;
-            m.Hobbies = HobArray;
             m.Expertises = ExperArray;
+
+
             return m;
         }
+
+        //מקבלת רשימת תיירים ע"פ הפורמט ההשוואה של מחלקת הנירמול
         public List<Match> GetTouristDetails()
         {
             DBservices db = new DBservices();
@@ -85,11 +104,15 @@ namespace IsraVisor_server.Models
            
             return listMatch;
         }
+
+        //מנרמלת תייר ספציפי ע"פ פורמט ההשוואה
         public Match ConvertSpecificTourist(Tourist t)
         {
             Match m = new Match();
             m.Rank = 0;
             m.Id = t.TouristID;
+
+            //ממיר תאריך לידה לשנה על מנת להשוות בין גילאים
             string o = "";
             if (t.YearOfBirth == null)
             {
@@ -102,9 +125,10 @@ namespace IsraVisor_server.Models
             char str = '/';
             string[] listTemp = o.Split(str);
             m.Age = int.Parse(listTemp[2]);
+            //תאריך לידה
+            
+            //מוסיף את השפה של התייר
             List<int> langArray = new List<int>();
-            List<int> HobArray = new List<int>();
-            List<int> ExperArray = new List<int>();
             if (t.LanguageCode == 0)
             {
                 langArray.Add(0);
@@ -114,7 +138,10 @@ namespace IsraVisor_server.Models
                 langArray.Add(t.LanguageCode);
             }
             m.Language = langArray;
-            if (t.Hobbies!= null)
+
+            //מוסיף את רשימת התחביבים של התייר
+            List<int> HobArray = new List<int>();
+            if (t.Hobbies != null)
             {
                 m.Hobbies = t.Hobbies;
             }
@@ -122,6 +149,9 @@ namespace IsraVisor_server.Models
             {
                 m.Hobbies = new List<int>();
             }
+
+            //מוסיף את רשימת ההתמחויות של התייר
+            List<int> ExperArray = new List<int>();
             if (t.Expertises != null)
             {
                 m.Expertises = t.Expertises;
@@ -132,11 +162,6 @@ namespace IsraVisor_server.Models
             }
             return m;
         }
-
-
-        public void PostGuideMatch(string value)
-        {
-           
-        }
+     
     }
 }

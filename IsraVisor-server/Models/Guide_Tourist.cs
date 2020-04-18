@@ -14,12 +14,14 @@ namespace IsraVisor_server.Models
         public string Comment { get; set; }
 
 
+        //מקבלת את רשימת הניקודים שתייר ספציפי נתן למדריכים
         public Guide_Tourist GetRankByID(int id)
         {
             DBservices db = new DBservices();
             return db.GetGuidesRankByID(id);
         }
 
+        //מקבלת רשימת ניקודים של מדריך ספציפי שקיבל מתיירים
         public double GetAllRanksOfGuide(int id)
         {
             DBservices db = new DBservices();
@@ -29,11 +31,12 @@ namespace IsraVisor_server.Models
             {
                 sum += listRanks[i].Rank;
             }
-            sum = sum / listRanks.Count;
-             db.UpdateRankGuide(id, sum);
+            sum = sum / listRanks.Count; //מחשבת ניקוד ממוצע
+             db.UpdateRankGuide(id, sum); //מעדכנת ניקוד של המדריך
             return sum;
         }
 
+        //מכניסה ניקוד חדש שתייר נתן למדריך
         public void PostGuideTouristRank(Guide_Tourist guide_Tourist)
         {
             DBservices db = new DBservices();

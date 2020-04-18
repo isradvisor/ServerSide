@@ -13,14 +13,14 @@ namespace IsraVisor_server.Controllers
 {
     public class GuideController : ApiController
     {
-        // GET api/<controller>
+        // GET api/<controller>מקבלת את כל המדריכים
         public List<Guide> Get()
         {
             Guide g = new Guide();
             return g.ReadGuides();
         }
 
-        // GET api/<controller>/5
+        // GET api/<controller>/5 //מקבלת מדריך ע"פ אימייל
         public Guide Get(string email)
         {
             Guide g = new Guide();
@@ -28,22 +28,23 @@ namespace IsraVisor_server.Controllers
         }
 
      
-        // POST api/<controller>
+        // POST api/<controller>//מכניסה מדריך לSQL
         public Guide Post([FromBody]Guide g)
         {
             Guide g1 = new Guide();
            return g1.PostGuideToSQL(g);
         }
 
+        //מכניסה את שפות המדריך
         [HttpPost]
         [Route("api/Guide/PostGuideLanguage")]
         public List<Guide_Language> PostLanguage([FromBody]List<Guide_Language> guideLan)
         {
             Guide_Language guideLnaguage = new Guide_Language();
             return guideLnaguage.PostGuideLanguagesToSQL(guideLan);
-            //guideLnagu.PostLanguagesGuideToSQL(guideLan);
         }
-        //Post To Check log in
+
+        //Post To Check log in // בודק אם משתמש קיים
         [HttpPost]
         [Route("api/Guide/PostToCheck")]
         public Guide CheckPost([FromBody]Guide guideCheck)
@@ -51,6 +52,8 @@ namespace IsraVisor_server.Controllers
             Guide checkGuide = new Guide();
             return checkGuide.PostGuideToCheck(guideCheck);
         }
+
+        //RESET PASSWORD
         [HttpPost]
         [Route("api/Guide/Reset")]
         public void Reset([FromBody]object email)
@@ -58,6 +61,8 @@ namespace IsraVisor_server.Controllers
             Guide checkGuide = new Guide();
              checkGuide.ResetPassword(email);
         }
+
+
         [HttpPost]
         [Route("api/Guide/UpdateProfilePic")]
         public void PostPic(ProfilePicture GuidepicAndId)
@@ -101,15 +106,8 @@ namespace IsraVisor_server.Controllers
             return Request.CreateResponse(HttpStatusCode.Created, imageLinks);
         }
 
-        //[HttpPost]
-        //[Route("api/Guide/PostPic")]
-        //public void PostPic([FromBody]object picture)
-        //{
-        //    Guide checkGuide = new Guide();
-        //    checkGuide.PostPicture(picture);
-        //}
-
-        // PUT api/<controller>/5
+    
+        // PUT api/<controller>/5 מעדכנת פרטי המדריך
         public Guide Put([FromBody]Guide g)
         {
             Guide guide = new Guide();

@@ -16,14 +16,14 @@ namespace IsraVisor_server.Controllers
             return new string[] { "value1", "value2" };
         }
 
-        // GET api/<controller>/5
+        // GET api/<controller>/5  //מקבל את כל הניקודים שהמדריך קיבל מהתיירים
         public double Get(int id)
         {
             Guide_Tourist g = new Guide_Tourist();
            return g.GetAllRanksOfGuide(id);
         }
 
-        // POST api/<controller>
+        // POST api/<controller> //מכניס ניקוד של תייר לSQL 
         public void Post([FromBody]Guide_Tourist guide_Tourist)
         {
             Guide_Tourist g = new Guide_Tourist();

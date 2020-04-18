@@ -8,9 +8,9 @@ namespace IsraVisor_server.Models
     public class Area
     {
         public string AreaName { get; set; }
-
         static public List<Area> AreaList = new List<Area>();
 
+        //מכניס את הערים לSQL
         public void PostAllCitiesToSQL(List<Area> allCities)
         {
             DBservices db = new DBservices();
@@ -23,6 +23,7 @@ namespace IsraVisor_server.Models
 
         }
 
+        //מקבל את הערים מהSQL
         public List<Area> GetAllCitiesFromSQL()
         {
             DBservices db = new DBservices();

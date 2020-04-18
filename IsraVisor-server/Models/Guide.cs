@@ -29,20 +29,22 @@ namespace IsraVisor_server.Models
         public List<Guide_Hobby> gHobbies { get; set; }
         public List<Guide_Language> gLanguages { get; set; }
      
+
+        //מקבלת מדריך ע"פ אימייל
         public Guide GetGuideByEmail(string email)
         {
             DBservices db = new DBservices();
            return db.GetGuideByEmailFromSQL(email);
         }
 
+        //מקבלת את כל המדריכים
         public List<Guide> ReadGuides()
         {
             DBservices dbs = new DBservices();
             return dbs.ReadGuides();
         }
 
-      
-
+      //מכניסה מדריך לSQL
         public Guide PostGuideToSQL(Guide g)
         {
             DBservices db = new DBservices();
@@ -54,6 +56,7 @@ namespace IsraVisor_server.Models
             return null;
         }
 
+        //RESET PASSWORD
         public void ResetPassword(object email)
         {
             Guide g = new Guide();
@@ -87,6 +90,7 @@ namespace IsraVisor_server.Models
             db.ChangePass(randPass,g.gCode);
         }
 
+        //מעדכנת תמונת פרופיל
         public void UpdatePic(string picPath, int id)
         {
             DBservices db = new DBservices();
@@ -132,6 +136,7 @@ namespace IsraVisor_server.Models
             return builder.ToString();
         }
 
+        //מעדכנת את פרטי המדריך
         public Guide UpdateGuideSQL(Guide g)
         {
             DBservices db = new DBservices();
@@ -145,13 +150,14 @@ namespace IsraVisor_server.Models
             }
         }
 
+        //בודקת אם קיים מדריך
         public Guide PostGuideToCheck(Guide guideCheck)
         {
             DBservices db = new DBservices();
            Guide tempGuide = db.GetGuideByEmailFromSQL(guideCheck.Email);
             if (guideCheck.FirstName == null) //check if click on sign in or other registration..
             {
-                if (guideCheck.PasswordGuide == tempGuide.PasswordGuide)
+                if (guideCheck.PasswordGuide == tempGuide.PasswordGuide) //בודק אם הסיסמה נכונה
                 {
                     return tempGuide;
                 }
@@ -160,11 +166,11 @@ namespace IsraVisor_server.Models
                     return null;
                 }
             }
-            else
+            else //אם נכנס דרך ההרשמה ולא דרך ההתחברות
             {
-                if (tempGuide.Email == null)
+                if (tempGuide.Email == null) //בודק אם קיים מייל
                 {
-                    return PostGuideToSQL(guideCheck);
+                    return PostGuideToSQL(guideCheck); //מכניס מדריך חדש
                 }
                 else
                 {

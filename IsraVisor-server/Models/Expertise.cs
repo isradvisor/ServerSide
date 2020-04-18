@@ -11,6 +11,7 @@ namespace IsraVisor_server.Models
         public string NameE { get; set; }
         public string Picture { get; set; }
 
+        //מקבלת את כל ההתמחויות מהSQL
         public IEnumerable<Expertise> GetAllExpertises()
         {
             DBservices db = new DBservices();
