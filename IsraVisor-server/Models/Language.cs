@@ -7,6 +7,7 @@ namespace IsraVisor_server.Models
 {
     public class Language
     {
+        public int Id { get; set; }
         public string LName { get; set; }
         public string LNameEnglish { get; set; }
         public int LCode { get; set; }

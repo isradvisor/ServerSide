@@ -54,17 +54,17 @@
          function postTourist() {
             Tourist = {
                 
-                "FirstName": "Goerge",
-                "LastName": "Cohen",
+                //"FirstName": "Goerge",
+                //"LastName": "Cohen",
                 "Email": "avielpalgi@gmail.com",
-                "FirstTimeInIsrael": "false",
-                "PasswordTourist": "qqqq",
-                "Gender": "Female",
-                "YearOfBirth": "12-17-1993",
-                "TripType": "Couple"
+                //"FirstTimeInIsrael": "false",
+                "PasswordTourist": "1234",
+                //"Gender": "Female",
+                //"YearOfBirth": "12-17-1993",
+                //"TripType": "Couple"
 
             }
-            ajaxCall("POST", "../../api/Tourist/TripType",  JSON.stringify(Tourist), successTourist, errorTourist)
+            ajaxCall("POST", "../../api/Tourist",  JSON.stringify(Tourist), successTourist, errorTourist)
         }
         function successTourist(data) {
             console.log(data)
