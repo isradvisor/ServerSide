@@ -42,20 +42,31 @@ public class DBservices
                 g.FirstName = (string)dr["firstName"];
                 g.LastName = (string)dr["LastName"];
                 g.ProfilePic = (string)dr["profilePic"];
-                g.License = Convert.ToInt32(dr["License"]);
-                g.DescriptionGuide = (string)dr["descriptionGuide"];
-                g.Phone = (string)(dr["phone"]);
+                if (dr["License"] != System.DBNull.Value)
+                {
+                    g.License = Convert.ToInt32(dr["License"]);
+                }
+                if (dr["descriptionGuide"] != System.DBNull.Value)
+                {
+                    g.DescriptionGuide = (string)dr["descriptionGuide"];
+                }
+                if (dr["phone"] != DBNull.Value)
+                {
+                    g.Phone = (string)(dr["phone"]);
+                }
                 g.SignDate = Convert.ToDateTime(dr["SignDate"]).ToString("MM/dd/yyyy");
                 g.BirthDay = Convert.ToDateTime(dr["BirthDay"]).ToString("MM/dd/yyyy");
-                //g.BirthDay = g.BirthDay.ToString();
-                bool genderGuide = Convert.ToBoolean(dr["gender"]);
-                if (genderGuide)
+                if (dr["gender"] != System.DBNull.Value)
                 {
-                    g.Gender = "male";
-                }
-                else
-                {
-                    g.Gender = "female";
+                    bool genderGuide = Convert.ToBoolean(dr["gender"]);
+                    if (genderGuide)
+                    {
+                        g.Gender = "male";
+                    }
+                    else
+                    {
+                        g.Gender = "female";
+                    }
                 }
                 //g.Rank = Convert.ToDouble(dr["Rank"]);
 
@@ -102,20 +113,33 @@ public class DBservices
                 guide.FirstName = (string)dr["firstName"];
                 guide.LastName = (string)dr["LastName"];
                 guide.ProfilePic = (string)dr["profilePic"];
-                guide.License = Convert.ToInt32(dr["License"]);
-                guide.DescriptionGuide = (string)dr["descriptionGuide"];
-                guide.Phone = (string)(dr["phone"]);
+                if (dr["License"] != System.DBNull.Value)
+                {
+                    guide.License = Convert.ToInt32(dr["License"]);
+                }
+                if (dr["descriptionGuide"] != System.DBNull.Value)
+                {
+                    guide.DescriptionGuide = (string)dr["descriptionGuide"];
+                }
+                if (dr["phone"] != System.DBNull.Value)
+                {
+                    guide.Phone = (string)(dr["phone"]);
+                }
                 guide.SignDate = Convert.ToDateTime(dr["SignDate"]).ToString("MM/dd/yyyy");
                 guide.BirthDay = Convert.ToDateTime(dr["BirthDay"]).ToString("MM/dd/yyyy");
-                bool genderGuide = Convert.ToBoolean(dr["gender"]);
-                if (genderGuide)
+                if (dr["gender"] != System.DBNull.Value)
                 {
-                    guide.Gender = "male";
+                    bool genderGuide = Convert.ToBoolean(dr["gender"]);
+                    if (genderGuide)
+                    {
+                        guide.Gender = "male";
+                    }
+                    else
+                    {
+                        guide.Gender = "female";
+                    }
                 }
-                else
-                {
-                    guide.Gender = "female";
-                }
+               
                 if (dr["Rank"] != System.DBNull.Value)
                 {
                     guide.Rank = Convert.ToDouble(dr["Rank"]);
@@ -162,20 +186,33 @@ public class DBservices
                 guide.FirstName = (string)dr["firstName"];
                 guide.LastName = (string)dr["LastName"];
                 guide.ProfilePic = (string)dr["profilePic"];
-                guide.License = Convert.ToInt32(dr["License"]);
-                guide.DescriptionGuide = (string)dr["descriptionGuide"];
-                guide.Phone = (string)(dr["phone"]);
+                if (dr["License"] != System.DBNull.Value)
+                {
+                    guide.License = Convert.ToInt32(dr["License"]);
+                }
+                if (dr["descriptionGuide"] != System.DBNull.Value)
+                {
+                    guide.DescriptionGuide = (string)dr["descriptionGuide"];
+                }
+                if (dr["phone"] != System.DBNull.Value)
+                {
+                    guide.Phone = (string)(dr["phone"]);
+                }
                 guide.SignDate = Convert.ToDateTime(dr["SignDate"]).ToString("MM/dd/yyyy");
                 guide.BirthDay = Convert.ToDateTime(dr["BirthDay"]).ToString("MM/dd/yyyy");
-                bool genderGuide = Convert.ToBoolean(dr["gender"]);
-                if (genderGuide)
+                if (dr["gender"] != System.DBNull.Value)
                 {
-                    guide.Gender = "male";
+                    bool genderGuide = Convert.ToBoolean(dr["gender"]);
+                    if (genderGuide)
+                    {
+                        guide.Gender = "male";
+                    }
+                    else
+                    {
+                        guide.Gender = "female";
+                    }
                 }
-                else
-                {
-                    guide.Gender = "female";
-                }
+
                 if (dr["Rank"] != System.DBNull.Value)
                 {
                     guide.Rank = Convert.ToDouble(dr["Rank"]);
@@ -243,7 +280,6 @@ public class DBservices
 
     private string BuildInsertGovCommand(Guide g)
     {
-        int Gender = 1;
         string Password = "GovIL" + g.FirstName;
         g.ProfilePic = "";
         g.BirthDay = g.SignDate;
@@ -251,8 +287,8 @@ public class DBservices
 
         StringBuilder sb = new StringBuilder();
         // use a string builder to create the dynamic string
-        sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}','{5}',{6},'{7}','{8}',{9},'{10}')", g.Email, Password, g.FirstName, g.LastName, g.SignDate, g.ProfilePic, g.License, "", g.Phone, Gender, g.BirthDay);
-        String prefix = "INSERT INTO GuideProject " + "(email,passwordGuide,firstName,LastName,SignDate,profilePic,License,descriptionGuide,Phone,gender,BirthDay)";
+        sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}','{5}',{6},'{7}','{8}','{9}')", g.Email, Password, g.FirstName, g.LastName, g.SignDate, g.ProfilePic, g.License, g.Phone, g.BirthDay, g.DescriptionGuide);
+        String prefix = "INSERT INTO GuideProject " + "(email,passwordGuide,firstName,LastName,SignDate,profilePic,License,Phone,BirthDay,descriptionGuide)";
         command = prefix + sb.ToString();
         return command;
     }

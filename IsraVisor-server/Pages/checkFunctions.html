@@ -33,14 +33,14 @@
         }
 
         function GetMatchTouristCal2Guides() {
-            let id = 121;
-            ajaxCall("GET", "../api/Match/calculateTouristBetweenGuides/" + id, "", successCBMatchGet, errorCBMatchGet)
+            let id = 89;
+            ajaxCall("GET", "../../api/Match/calculateTouristBetweenGuides/" + id, "", successCBMatchGet, errorCBMatchGet)
         }
 
         function GetMatchTouristCal2Tourists() {
-            let id = 121;
+            let id = 11;
 
-            ajaxCall("GET", "../api/Match/calculateTouristBetweenTourists/" + id, "", successCBMatchGet, errorCBMatchGet)
+            ajaxCall("GET", "../../api/Match/calculateTouristBetweenTourists/" + id, "", successCBMatchGet, errorCBMatchGet)
         }
 
         function GetMatchByNum() {
@@ -106,12 +106,12 @@
             ajaxCall("POST", "../../api/Area", JSON.stringify(ArrayAreaNames), successCBPost, errorCBPost)
         }
 
-        function GetDeatilsOfGuides(guides) {
+        function GetDeatilsOfGuides() {
             boolCheck = true;
             var langtempArray = [];
             var langTemp2 = [];
-            for (var i = 0; i < guides.length; i++) {
-                let element = guides[i];
+            for (var i = 0; i < GuidesDetails.result.records.length; i++) {
+                let element = GuidesDetails.result.records[i];
                 console.log(element.Language);
                 let arrayElements = element.Language.split(";");
                 for (var j = 0; j < arrayElements.length; j++) {
@@ -222,7 +222,10 @@
             });
         }
         function insertGuideFromGovIL(data) {
-            GetDeatilsOfGuides(data);
+            console.log(data);
+            var License_Number = 7468;
+
+
         }
 
 
