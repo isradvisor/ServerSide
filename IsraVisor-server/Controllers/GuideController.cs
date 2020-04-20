@@ -65,10 +65,10 @@ namespace IsraVisor_server.Controllers
 
         [HttpPost]
         [Route("api/Guide/UpdateProfilePic")]
-        public void PostPic(ProfilePicture GuidepicAndId)
+        public Guide PostPic(ProfilePicture GuidepicAndId)
         {
             Guide g = new Guide();
-            g.UpdatePic(GuidepicAndId.picPath, GuidepicAndId.id);
+           return g.UpdatePic(GuidepicAndId.picPath, GuidepicAndId.id);
         }
 
         //מכניס מדריך מאתר משרד התיירות

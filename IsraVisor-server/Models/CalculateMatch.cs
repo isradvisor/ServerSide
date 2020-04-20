@@ -17,7 +17,7 @@ namespace IsraVisor_server.Models
         double ExpertisesMax = 35;//מקסימום אחוזים שמקבל השוואת ההתמחויות מתוך 100%
         double RankByTourist = 50; //האחוזים בהשוואה של ניקוד ספציפי למדריך של תייר דומה
         double maxRank = 5;//מקסימום ניקוד אפשרי שניתן לתת למדריך ע"י תייר
-
+        double MaxExpertiseHobby = 2;
 
         //משווה בין תייר לכל המדריכים
         public List<CalculateMatch> CalculateMatchBetweenTouristToAllGuides(int id)
@@ -123,7 +123,7 @@ namespace IsraVisor_server.Models
                         //בודק אם התחביב של המדריך/תייר נמצא ברשימה של תחביבי התייר
                         if (match2.Hobbies.Contains(match.Hobbies[j]))
                         {
-                            rankHobby += (HobbiesMax / match.Hobbies.Count);
+                            rankHobby += (HobbiesMax / MaxExpertiseHobby) + HobbiesMax/2;
                         }
                     }
                 }
@@ -137,7 +137,7 @@ namespace IsraVisor_server.Models
                         //בודק אם יש למדריך/תייר התמחות ברשימת ההתמחויות של התייר
                         if (match2.Expertises.Contains(match.Expertises[j]))
                         {
-                            rankExpertise += (ExpertisesMax / match.Expertises.Count);
+                            rankExpertise += (ExpertisesMax / MaxExpertiseHobby) + ExpertisesMax/2;
                         }
                     }
                 }
