@@ -78,7 +78,7 @@ namespace IsraVisor_server.Controllers
         // POST api/<controller>/Interest
         [HttpPost]
         [Route("api/Tourist/Interest")]
-        public int Post6([FromBody]Tourist tourist)
+        public List<int> Post6([FromBody]Tourist tourist)
         {
 
 
