@@ -120,7 +120,7 @@ namespace IsraVisor_server.Controllers
         public List<Guide> TopMatchGuides(int [] id)
         {
             Guide g = new Guide();
-            g.GetGuidesById(id);
+            return g.GetGuidesById(id);
         }
 
         // PUT api/<controller>/5 מעדכנת פרטי המדריך
