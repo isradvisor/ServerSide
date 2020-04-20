@@ -163,6 +163,79 @@ public class DBservices
         }
     }
 
+    public Guide GetGuideBygCode(int id)
+    {
+        Guide guide = new Guide();
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "SELECT * FROM GuideProject where gCode ='" + id + "'";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                guide.gCode = Convert.ToInt32(dr["gCode"]);
+                guide.Email = (string)dr["email"];
+                guide.PasswordGuide = (string)dr["PasswordGuide"];
+                guide.FirstName = (string)dr["firstName"];
+                guide.LastName = (string)dr["LastName"];
+                guide.ProfilePic = (string)dr["profilePic"];
+                if (dr["License"] != System.DBNull.Value)
+                {
+                    guide.License = Convert.ToInt32(dr["License"]);
+                }
+                if (dr["descriptionGuide"] != System.DBNull.Value)
+                {
+                    guide.DescriptionGuide = (string)dr["descriptionGuide"];
+                }
+                if (dr["phone"] != System.DBNull.Value)
+                {
+                    guide.Phone = (string)(dr["phone"]);
+                }
+                guide.SignDate = Convert.ToDateTime(dr["SignDate"]).ToString("MM/dd/yyyy");
+                guide.BirthDay = Convert.ToDateTime(dr["BirthDay"]).ToString("MM/dd/yyyy");
+                if (dr["gender"] != System.DBNull.Value)
+                {
+                    bool genderGuide = Convert.ToBoolean(dr["gender"]);
+                    if (genderGuide)
+                    {
+                        guide.Gender = "male";
+                    }
+                    else
+                    {
+                        guide.Gender = "female";
+                    }
+                }
+
+                if (dr["Rank"] != System.DBNull.Value)
+                {
+                    guide.Rank = Convert.ToDouble(dr["Rank"]);
+                }
+            }
+
+            return guide;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
     public Guide GetGuideByLicenseNum(int license)
     {
         Guide guide = new Guide();

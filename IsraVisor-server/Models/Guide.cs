@@ -116,10 +116,18 @@ namespace IsraVisor_server.Models
         }
 
         //מעדכנת תמונת פרופיל
-        public void UpdatePic(string picPath, int id)
+        public Guide UpdatePic(string picPath, int id)
         {
             DBservices db = new DBservices();
-            db.UpdateGuidePicture(picPath, id);
+            int num = db.UpdateGuidePicture(picPath, id);
+            if (num == 1)
+            {
+                return db.GetGuideBygCode(id);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public void PostPicture(object picture)
