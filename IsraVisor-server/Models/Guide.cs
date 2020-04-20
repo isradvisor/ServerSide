@@ -134,7 +134,7 @@ namespace IsraVisor_server.Models
             List<Guide> topThreeGuides = new List<Guide>();
             for (int i = 0; i < id.Length; i++)
             {
-                
+                //.....
             }
             return topThreeGuides;
         }
