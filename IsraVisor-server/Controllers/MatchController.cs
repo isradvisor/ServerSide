@@ -35,7 +35,7 @@ namespace IsraVisor_server.Controllers
             CalculateMatch m = new CalculateMatch();
             return m.CalculateMatchBetweenGuideToAllGuides(id);
         }
-
+        
         //עושה השוואה בין תייר לכל המדריכים על ידי מספר איידי של תייר
         [HttpGet]
         [Route("api/Match/calculateTouristBetweenGuides/{id}")]
