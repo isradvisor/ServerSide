@@ -51,20 +51,22 @@
         }
         function successCBMatchGet(data) {console.log(data) }
         function errorCBMatchGet(err) {console.log(err) }
-         function postTourist() {
-            Tourist = {
-                
-                "FirstName": "Goerge",
-                "LastName": "Cohen",
-                "Email": "avielpalgi@gmail.com",
-                "FirstTimeInIsrael": "false",
-                "PasswordTourist": "qqqq",
-                "Gender": "Female",
-                "YearOfBirth": "12-17-1993",
-                "TripType": "Couple"
 
-            }
-            ajaxCall("POST", "../../api/Tourist/TripType",  JSON.stringify(Tourist), successTourist, errorTourist)
+        function postTourist() {
+            //Tourist = {
+                
+            //    //"FirstName": "Goerge",
+            //    //"LastName": "Cohen",
+            //    //"Email": "avielpalgi@gmail.com",
+            //    //"FirstTimeInIsrael": "false",
+            //    //"PasswordTourist": "1234",
+            //    //"Gender": "Female",
+            //    //"YearOfBirth": "12-17-1993",
+            //    //"TripType": "Couple"
+            //    TouristId = 122
+
+            //}
+            ajaxCall("GET", "../api/Match/calculateTouristBetweenGuides/" + 86 ,  "", successTourist, errorTourist)
         }
         function successTourist(data) {
             console.log(data)

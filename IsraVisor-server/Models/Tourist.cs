@@ -85,16 +85,19 @@ namespace IsraVisor_server.Models
             }
         }
 
-        public int Interest(Tourist tourist)
+        public List<int> Interest(Tourist tourist)
         {
+            List<int> touristiD_AffectedRows = new List<int>();
             int rowAffected = 0;
             string hobbiesTable = "Hobby_Tourist_Project";
             string expertisesTable = "TripPlanIntrest_Project";
             DBservices db = new DBservices();
             tourist.TouristID = db.GetTouristId(tourist);
+            touristiD_AffectedRows.Add(tourist.TouristID);
             if (tourist.TouristID == 0)
             {
-                return rowAffected;
+
+                return null;
             }
 
             for (int i = 0; i < tourist.Hobbies.Count; i++)
@@ -105,7 +108,8 @@ namespace IsraVisor_server.Models
             {
                 rowAffected += db.Interest(tourist.TouristID, tourist.Expertises[i], expertisesTable);
             }
-            return rowAffected;
+            touristiD_AffectedRows.Add(rowAffected);
+            return touristiD_AffectedRows;
         }
 
         public int TouristTripType(Tourist tourist)

@@ -1541,11 +1541,12 @@ public class DBservices
             String selectSTR = "SELECT * FROM Language_Project";
             SqlCommand cmd = new SqlCommand(selectSTR, con);
 
-            // get a reader
+            // get a reader.....
             SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
             while (dr.Read())
             {   // Read till the end of the data into a row
                 Language lan = new Language();
+                lan.Id = Convert.ToInt32(dr["LCode"]);
                 lan.LName = (string)dr["LName"];
                 lan.LNameEnglish = (string)dr["LNameEnglish"];
                 lan.LCode = Convert.ToInt32(dr["LCode"]);
