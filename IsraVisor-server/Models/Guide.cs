@@ -128,6 +128,17 @@ namespace IsraVisor_server.Models
 
         }
 
+        public List<Guide> GetGuidesById(int[] id)
+        {
+            DBservices db = new DBservices();
+            List<Guide> topThreeGuides = new List<Guide>();
+            for (int i = 0; i < id.Length; i++)
+            {
+                
+            }
+            return topThreeGuides;
+        }
+
         // Generate a random password of a given length (optional)  
         public string RandomPassword(int size = 10)
         {

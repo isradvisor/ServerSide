@@ -114,7 +114,15 @@ namespace IsraVisor_server.Controllers
             return Request.CreateResponse(HttpStatusCode.Created, imageLinks);
         }
 
-    
+        //Get from DB top 3 guides that matched 
+        [HttpPost]
+        [Route("api/Guide/TopMatchGuides")]
+        public List<Guide> TopMatchGuides(int [] id)
+        {
+            Guide g = new Guide();
+            g.GetGuidesById(id);
+        }
+
         // PUT api/<controller>/5 מעדכנת פרטי המדריך
         public Guide Put([FromBody]Guide g)
         {
