@@ -97,7 +97,7 @@ namespace IsraVisor_server.Models
             if (tourist.TouristID == 0)
             {
 
-                return rowAffected;
+                return null;
             }
 
             for (int i = 0; i < tourist.Hobbies.Count; i++)
