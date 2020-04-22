@@ -63,10 +63,12 @@
             //    //"Gender": "Female",
             //    //"YearOfBirth": "12-17-1993",
             //    //"TripType": "Couple"
-            //    TouristId = 122
+               
 
             //}
-            ajaxCall("GET", "../api/Match/calculateTouristBetweenGuides/" + 86 ,  "", successTourist, errorTourist)
+            //id = [4, 83, 129];
+        
+            ajaxCall("GET", "../api/Match/calculateTouristBetweenGuides/" +122, "", successTourist, errorTourist)
         }
         function successTourist(data) {
             console.log(data)
