@@ -21,6 +21,8 @@ namespace IsraVisor_server.Controllers
         }
 
         // GET api/<controller>/5 //מקבלת מדריך ע"פ אימייל
+        //[HttpGet]
+        //[Route("api/GuideGetByEmail/{emailadress}")]
         public Guide Get(string email)
         {
             Guide g = new Guide();
@@ -56,10 +58,10 @@ namespace IsraVisor_server.Controllers
         //RESET PASSWORD
         [HttpPost]
         [Route("api/Guide/Reset")]
-        public void Reset([FromBody]object email)
+        public void Reset([FromBody]Guide guide)
         {
             Guide checkGuide = new Guide();
-             checkGuide.ResetPassword(email);
+             checkGuide.ResetPassword(guide.Email);
         }
 
 
