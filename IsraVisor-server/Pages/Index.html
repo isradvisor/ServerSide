@@ -53,11 +53,11 @@
         function errorCBMatchGet(err) {console.log(err) }
 
         function postTourist() {
-            //Tourist = {
+            Tourist = {
                 
-            //    //"FirstName": "Goerge",
-            //    //"LastName": "Cohen",
-            //    //"Email": "avielpalgi@gmail.com",
+                "FirstName": "Gal",
+                "LastName": "Ben Zvi",
+                "Email": "galbz123@gmail.com",
             //    //"FirstTimeInIsrael": "false",
             //    //"PasswordTourist": "1234",
             //    //"Gender": "Female",
@@ -65,10 +65,10 @@
             //    //"TripType": "Couple"
                
 
-            //}
+            }
             //id = [4, 83, 129];
         
-            ajaxCall("GET", "../api/Match/calculateTouristBetweenGuides/" +122, "", successTourist, errorTourist)
+            ajaxCall("POST", "../api/Tourist/GoogleUser", JSON.stringify(Tourist), successTourist, errorTourist)
         }
         function successTourist(data) {
             console.log(data)

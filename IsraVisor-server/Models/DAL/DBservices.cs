@@ -163,6 +163,49 @@ public class DBservices
         }
     }
 
+    public int UpdateGoogleOrFacebookAccount(Tourist tourist)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+        string cStr;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        cStr = "UPDATE TouristProject SET passwordTourist = '" + (tourist.PasswordTourist) + "', yearOfBirth = '" + (tourist.YearOfBirth) + "', gender= '" + (tourist.Gender) + "'  WHERE email = '" + (tourist.Email) + "'";
+
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
     public Guide GetGuideBygCode(int id)
     {
         Guide guide = new Guide();
@@ -739,7 +782,7 @@ public class DBservices
         {
             con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
 
-            selectSTR = "select * from TouristProject where email = '" + (tourist.Email) + "' and passwordTourist is null";
+            selectSTR = "select * from TouristProject where email = '" + (tourist.Email) + "'";
 
 
             SqlCommand cmd = new SqlCommand(selectSTR, con);
@@ -1055,7 +1098,7 @@ public class DBservices
         // use a string builder to create the dynamic string
 
 
-        command = "INSERT INTO TouristProject (FirstName, email, ProfilePic) VALUES ('" + (t.FirstName) + "', '" + (t.Email) + "', '" + (t.ProfilePic) + "')";
+        command = "INSERT INTO TouristProject (FirstName, LastName, email, ProfilePic) VALUES ('" + (t.FirstName) + "','" + (t.LastName) + "', '" + (t.Email) + "', '" + (t.ProfilePic) + "')";
 
         return command;
     }
