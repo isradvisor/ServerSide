@@ -95,6 +95,15 @@ namespace IsraVisor_server.Controllers
             return tourist.FirstTimeInIsraelUPDATE(tourist);
         }
 
+        //First Sign Up with Google or Facebook Account
+        // PUT api/<controller>/Register
+        [HttpPut]
+        [Route("api/Tourist/GoogleFacebookSignUpFirstTime")]
+        public int Put1([FromBody]Tourist tourist)
+        {
+            return tourist.GoogleFacebookSignUpFirstTime(tourist);
+        }
+
         //Flights Dates UPDATE (FromDate, EndDate / EstimateDate)
         // PUT api/<controller>/FlightsDates
         [HttpPut]

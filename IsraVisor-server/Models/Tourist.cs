@@ -112,6 +112,32 @@ namespace IsraVisor_server.Models
             return touristiD_AffectedRows;
         }
 
+        public int GoogleFacebookSignUpFirstTime(Tourist tourist)
+        {
+            int affectedRow = 0;
+            DBservices db = new DBservices();
+            
+
+            if (tourist.Email != null)
+            {
+                affectedRow = db.UpdateGoogleOrFacebookAccount(tourist);
+                tourist.TouristID = db.GetTouristId(tourist);
+                affectedRow += db.PostTouristLanguageToDB(tourist);
+                if (affectedRow == 2)
+                { return affectedRow; }
+                else
+                {
+                    return 1;
+                }
+
+            }
+            else
+            {
+                return 3;
+            }
+
+        }
+
         public int TouristTripType(Tourist tourist)
         {
             DBservices db = new DBservices();
