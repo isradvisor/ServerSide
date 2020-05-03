@@ -353,7 +353,7 @@ public class DBservices
 
     private string BuildInsertGovCommand(Guide g)
     {
-        string Password = "GovIL" + g.FirstName;
+        string Password = "GovILPass" + g.FirstName;
         g.ProfilePic = "";
         g.BirthDay = g.SignDate;
         String command;

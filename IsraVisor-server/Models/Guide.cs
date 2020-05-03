@@ -89,7 +89,19 @@ namespace IsraVisor_server.Models
             DBservices db = new DBservices();
             db.ChangePass(randPass,g.gCode);
         }
-        
+        public Guide GetGuideGovIlByLicenseNum(int num)
+        {
+            DBservices db = new DBservices();
+            Guide g = db.GetGuideByLicenseNum(num);
+            if (g.Email != null)
+            {
+                return g;
+            }
+            else
+            {
+                return null;
+            }
+        }
         //מכניס מדריך מאתר משרד התיירות
         public Guide PostGuideFromGov(Guide g)
         {
