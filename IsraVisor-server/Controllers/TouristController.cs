@@ -16,17 +16,12 @@ namespace IsraVisor_server.Controllers
             Tourist t = new Tourist();
             return t.readTourist();
         }
-
-
-
         //Log In Check
         // POST api/<controller>
         public Tourist Post([FromBody]Tourist tourist)
         {
-
             Tourist t = new Tourist();
             return t.LogIn(tourist);
-
         }
         //Sign In
         // POST api/<controller>/Register
@@ -120,6 +115,16 @@ namespace IsraVisor_server.Controllers
         public int Put3([FromBody]Tourist tourist)
         {
             return tourist.SetBudget(tourist);
+        }
+
+        //GetAllTouristDetailsByEmailTourist
+        [HttpGet]
+        [Route("api/Tourist/GetDetails/{id}")]
+        public Tourist GetDetails(int id)
+        {
+            string email = "rat@gmail.com";
+            Tourist t = new Tourist();
+            return t.GetAllDetails(id);
         }
 
         // DELETE api/<controller>/5

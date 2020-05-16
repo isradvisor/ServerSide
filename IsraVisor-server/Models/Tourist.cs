@@ -18,6 +18,12 @@ namespace IsraVisor_server.Models
         public string ProfilePic { get; set; }
         public string InterestGender { get; set; }
         public bool FirstTimeInIsrael { get; set; }
+
+        internal List<Tourist> readAllTourist()
+        {
+            throw new NotImplementedException();
+        }
+
         public int LanguageCode { get; set; }
         public List<int> Hobbies { get; set; }
         public List<int> Expertises { get; set; }
@@ -110,6 +116,12 @@ namespace IsraVisor_server.Models
             }
             touristiD_AffectedRows.Add(rowAffected);
             return touristiD_AffectedRows;
+        }
+
+        public Tourist GetAllDetails(int id)
+        {
+            DBservices db = new DBservices();
+            return db.GetAllDetailsFromSQL(id);
         }
 
         public int GoogleFacebookSignUpFirstTime(Tourist tourist)

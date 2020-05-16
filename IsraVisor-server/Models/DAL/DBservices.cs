@@ -89,6 +89,362 @@ public class DBservices
 
         }
     }
+
+    public List<AttractionPointInTrip> GetAttractionsFromSQLByID(int id)
+    {
+        List<AttractionPointInTrip> attractions = new List<AttractionPointInTrip>();
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "SELECT * FROM AttractionPointInTrip_Project ap join Attraction_Project att on ap.AttractionCode = att.AttractionCode where TripPlan_IdPlan = " + id + " order by fromHour";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                AttractionPointInTrip att = new AttractionPointInTrip();
+                att.fromHour = Convert.ToDateTime(dr["fromHour"]);
+                att.ToHour = Convert.ToDateTime(dr["ToHour"]);
+                att.PointInPlanId = Convert.ToInt32(dr["PointInPlanId"]);
+                att.AttractionCode = Convert.ToInt32(dr["AttractionCode"]);
+                att.AttractionName = (string)(dr["AttractionName"]);
+                att.CityName = (string)(dr["AreaName"]);
+                att.Opening_Hours = (string)(dr["Opening_Hours"]);
+                att.PointNo = Convert.ToInt32(dr["PointNo"]);
+                attractions.Add(att);
+            }
+
+            return attractions;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public int AddAtraction(AttractionPointInTrip attraction)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertAttractionCommand(attraction);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private string BuildInsertAttractionCommand(AttractionPointInTrip attraction)
+    {
+        String command;
+        DateTime fromHour = Convert.ToDateTime(attraction.fromHour.ToString());
+        DateTime toHour = Convert.ToDateTime(attraction.ToHour.ToString());
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values({0},{1},'{2}','{3}',{4},'{5}','{6}')", attraction.TripPlan_IdPlan,attraction.PointInPlanId,attraction.CityName,attraction.AttractionName,attraction.AttractionCode,fromHour.ToString("yyyy-MM-dd HH:mm:ss"),toHour.ToString("yyyy-MM-dd HH:mm:ss"));
+        String prefix = "INSERT INTO AttractionPointInTrip_Project " + "(TripPlan_IdPlan,PointInPlanId,CityName,AttractionName,AttractionCode,fromHour,ToHour)";
+        command = prefix + sb.ToString();
+        return command;
+    }
+
+    public List<AreaPointInTrip> GetCitiesFromSQL(int id)
+    {
+        List<AreaPointInTrip> cities = new List<AreaPointInTrip>();
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "SELECT * FROM AreaPointInTrip_Project where TripPlan_IdPlan = " + id + " order by FromDate";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                AreaPointInTrip city = new AreaPointInTrip();
+                city.FromDate = Convert.ToDateTime(dr["FromDate"]);
+                city.AreaName = (string)(dr["AreaName"]);
+                city.OrderNumber = Convert.ToInt32(dr["OrderNumber"]);
+                city.PointInPlanId = Convert.ToInt32(dr["PointInPlanId"]);
+                cities.Add(city);
+            }
+
+            return cities;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public int AddTripTouristToSQL(AreaPointInTrip trip)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertTripCommand(trip);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    public Tourist GetAllDetailsFromSQL(int id)
+    {
+        Tourist tour = new Tourist();
+        List<int> HobbiesList = new List<int>();
+        List<int> ExpertisesList = new List<int>();
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "select t.Id,t.FirstName,t.LastName,t.email,t.yearOfBirth,t.ProfilePic,t.IntrestInGender,t.FirstTimeInIsrael,t.gender,tp.tripType,tp.FromDate,tp.ToDate,tp.EstimateDate,tp.Duration,tp.Budget,lp.LCode,ep.Code,hp.HCode from TouristProject t join Trip_Plan_Project tp on t.email = tp.TouristEmail join TripPlanIntrest_Project tpi on t.Id = tpi.TouristId join Expertise_Project ep on tpi.ExpertiseCode = ep.Code join Tourist_Language_Project tl on t.Id = tl.IdTourist join Language_Project lp on tl.LanguageLCode = lp.LCode join Hobby_Tourist_Project ht on t.Id = ht.TouristId join Hobby_Project hp on ht.HobbyHCode = hp.HCode where t.Id='" + id + "'";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                tour.TouristID = Convert.ToInt32(dr["Id"]);
+                tour.FirstName = (string)(dr["FirstName"]);
+                tour.LastName = (string)(dr["LastName"]);
+                tour.Email = (string)(dr["email"]);
+                tour.YearOfBirth = Convert.ToDateTime(dr["yearOfBirth"]).ToString("MM/dd/yyyy");
+                if (dr["ProfilePic"] != System.DBNull.Value)
+                {
+                    tour.ProfilePic = (string)(dr["ProfilePic"]);
+                }
+                if (dr["IntrestInGender"] != System.DBNull.Value)
+                {
+                    tour.InterestGender = (string)(dr["IntrestInGender"]);
+                }
+                if (dr["FirstTimeInIsrael"] != System.DBNull.Value)
+                {
+                    tour.FirstTimeInIsrael = Convert.ToBoolean(dr["FirstTimeInIsrael"]);
+                }
+                if (dr["gender"] != System.DBNull.Value)
+                {
+                    tour.Gender = (string)(dr["gender"]);
+                }
+                if (dr["tripType"] != System.DBNull.Value)
+                {
+                    tour.TripType = (string)(dr["tripType"]);
+                }
+                if (dr["FromDate"] != System.DBNull.Value)
+                {
+                    tour.FromDate = (string)(dr["FromDate"]);
+                }
+                if (dr["ToDate"] != System.DBNull.Value)
+                {
+                    tour.ToDate = (string)(dr["ToDate"]);
+                }
+                if (dr["EstimateDate"] != System.DBNull.Value)
+                {
+                    tour.EstimateDate = (string)(dr["EstimateDate"]);
+                }
+                if (dr["Budget"] != System.DBNull.Value)
+                {
+                    tour.Budget = (string)(dr["Budget"]);
+                }
+                if (dr["LCode"] != System.DBNull.Value)
+                {
+                    tour.LanguageCode = Convert.ToInt32(dr["LCode"]);
+                }
+                if (dr["Code"] != System.DBNull.Value)
+                {
+                    int expertise = Convert.ToInt32(dr["Code"]);
+                    if (ExpertisesList.Count == 0)
+                    {
+                        ExpertisesList.Add(expertise);
+                    }
+                    else
+                    {
+                        if (ExpertisesList.Contains(expertise))
+                        {
+                        }
+                        else
+                        {
+                            ExpertisesList.Add(expertise);
+                        }
+                    }
+                }
+                if (dr["HCode"] != System.DBNull.Value)
+                {
+                    int hobby = Convert.ToInt32(dr["HCode"]);
+                    if (HobbiesList.Count == 0)
+                    {
+                        HobbiesList.Add(hobby);
+                    }
+                    else
+                    {
+                        if (HobbiesList.Contains(hobby))
+                        {
+
+                        }
+                        else
+                        {
+                            HobbiesList.Add(hobby);
+                        }
+                    }
+                }
+            }
+
+
+            //bool existHob = false;
+            //bool existExper = false;
+
+            //for (int i = 0; i < touristList.Last().Hobbies.Count; i++) //רץ על התחביבים של התייר האחרון
+            //{
+            //    int element = touristList.Last().Hobbies[i];
+            //    if (element == Convert.ToInt32(dr["HobbyHCode"])) //בודק אם התחביב כבר הוכנס
+            //    {
+            //        existHob = true;
+            //    }
+            //}
+            //if (!existHob) //אם התחביב לא הוכנס עדיין
+            //{
+            //    if (dr["HobbyHCode"] != System.DBNull.Value)
+            //    {
+            //        touristList.Last().Hobbies.Add(Convert.ToInt32(dr["HobbyHCode"]));
+            //    }
+            //}
+            //else
+            //{
+            //    for (int i = 0; i < touristList.Last().Expertises.Count; i++)
+            //    {
+            //        int element = touristList.Last().Expertises[i];
+            //        if (element == Convert.ToInt32(dr["ExpertiseCode"])) //בודק אם ההתמחות הוכנסה
+            //        {
+            //            existExper = true;
+            //        }
+            //    }
+            //    if (!existExper) //אם ההתמחות לא הוכנסה עדיין
+            //    {
+            //        if (dr["ExpertiseCode"] != System.DBNull.Value)
+            //        {
+            //            touristList.Last().Expertises.Add(Convert.ToInt32(dr["ExpertiseCode"]));
+            //        }
+            //    }
+            //}
+            tour.Expertises = ExpertisesList;
+            tour.Hobbies = HobbiesList;
+            return tour;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    private string BuildInsertTripCommand(AreaPointInTrip trip)
+    {
+        String command;
+        DateTime fromdate = Convert.ToDateTime(trip.FromDate.ToString());
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values('{0}','{1}',{2},{3})", trip.AreaName, fromdate.ToString("yyyy-MM-dd HH:mm:ss"), trip.OrderNumber,trip.TripPlan_IdPlan);
+        String prefix = "INSERT INTO AreaPointInTrip_Project " + "(AreaName,FromDate,OrderNumber,TripPlan_IdPlan)";
+        command = prefix + sb.ToString();
+        return command;
+    }
+
     //GET GUIDE BY EMAIL
     public Guide GetGuideByEmailFromSQL(string email)
     {
