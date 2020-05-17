@@ -26,7 +26,7 @@ namespace IsraVisor_server.Controllers
         }
         [HttpGet]
         [Route("api/BuildTrip/GetAttractions/{id}")]
-        public List<AttractionPointInTrip> GetCities(int id)
+        public List<AttractionPointInTrip> GetAttractions(int id)
         {
             AttractionPointInTrip attractions = new AttractionPointInTrip();
             return attractions.GetAttractionsById(id);
