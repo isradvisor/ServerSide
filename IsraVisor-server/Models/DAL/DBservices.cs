@@ -519,6 +519,49 @@ public class DBservices
         }
     }
 
+    public int EditProfile(Tourist tourist)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+        string cStr;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        cStr = "UPDATE TouristProject SET email = '" + (tourist.SecondEmail) + "', FirstName = '" + (tourist.FirstName) + "', LastName= '" + (tourist.LastName) + "'  WHERE email = '" + (tourist.Email) + "'";
+
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
     public int UpdateGoogleOrFacebookAccount(Tourist tourist)
     {
         SqlConnection con;

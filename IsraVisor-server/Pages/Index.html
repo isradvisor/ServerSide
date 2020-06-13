@@ -54,10 +54,10 @@
 
         function postTourist() {
             Tourist = {
-                
+                "Email":"galbz123@gmail.com",
                 "FirstName": "Gal",
                 "LastName": "Ben Zvi",
-                "Email": "galbz123@gmail.com",
+                "SecondEmail": "galbz123@gmail.com",
             //    //"FirstTimeInIsrael": "false",
             //    //"PasswordTourist": "1234",
             //    //"Gender": "Female",
@@ -68,7 +68,7 @@
             }
             //id = [4, 83, 129];
         
-            ajaxCall("POST", "../api/Tourist/GoogleUser", JSON.stringify(Tourist), successTourist, errorTourist)
+            ajaxCall("Put", "../../api/Tourist/EditProfile", JSON.stringify(Tourist), successTourist, errorTourist)
         }
         function successTourist(data) {
             console.log(data)
@@ -266,6 +266,6 @@
     <button onclick="postGuide()">add Guide</button>
     <button onclick="postGuideLang()">Post Lang Guide</button>
     <button onclick="puttGuide()">Update Guide</button>
-    <button onclick="postTourist()">Post Tourist</button>
+    <button onclick="postTourist()">Edit Tourist</button>
 </body>
 </html>

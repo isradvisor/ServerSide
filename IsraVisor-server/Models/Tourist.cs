@@ -18,6 +18,7 @@ namespace IsraVisor_server.Models
         public string ProfilePic { get; set; }
         public string InterestGender { get; set; }
         public bool FirstTimeInIsrael { get; set; }
+        public string SecondEmail { get; set; }
 
         internal List<Tourist> readAllTourist()
         {
@@ -89,6 +90,14 @@ namespace IsraVisor_server.Models
             {
                 return 2;
             }
+        }
+
+        //0= db error
+        //1= update succeeded
+        public int EditProfile (Tourist tourist)
+        {
+            DBservices db = new DBservices();
+            return db.EditProfile(tourist);
         }
 
         public List<int> Interest(Tourist tourist)
