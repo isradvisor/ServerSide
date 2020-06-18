@@ -18,8 +18,9 @@ namespace IsraVisor_server.Models
         public string ProfilePic { get; set; }
         public string InterestGender { get; set; }
         public bool FirstTimeInIsrael { get; set; }
+        public string Token { get; set; }
 
-        internal List<Tourist> readAllTourist()
+        public List<Tourist> readAllTourist()
         {
             throw new NotImplementedException();
         }
@@ -118,10 +119,10 @@ namespace IsraVisor_server.Models
             return touristiD_AffectedRows;
         }
 
-        public Tourist GetAllDetails(int id)
+        public Tourist GetAllDetails(string email)
         {
             DBservices db = new DBservices();
-            return db.GetAllDetailsFromSQL(id);
+            return db.GetAllDetailsFromSQL(email);
         }
 
         public int GoogleFacebookSignUpFirstTime(Tourist tourist)

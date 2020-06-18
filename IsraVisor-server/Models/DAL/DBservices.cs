@@ -90,6 +90,557 @@ public class DBservices
         }
     }
 
+    public Guide_Tourist GetTouristStatus(string email)
+    {
+        SqlConnection con = null;
+        Guide_Tourist gt = new Guide_Tourist();
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "select * from Guide_Tourist_StartPlanTrip_Project where TouristEmail = '" + email + "'";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                if (dr["Status"] != DBNull.Value)
+                {
+                    gt.Status = (string)(dr["Status"]);
+                }
+                gt.GuideEmail = (string)(dr["GuideEmail"]);
+            }
+
+            return gt;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public int AddRequest(Guide_Tourist gt)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertStatusCommand(gt);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    public List<Guide_Tourist> GetTokensOfUsersInChat()
+    {
+        List<Guide_Tourist> Requests = new List<Guide_Tourist>();
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "select t.Token,gt.GuideEmail from Guide_Tourist_StartPlanTrip_Project gt inner join TouristProject t on gt.TouristEmail = t.email";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                Guide_Tourist gt = new Guide_Tourist();
+                if (dr["Token"] != DBNull.Value)
+                {
+                     gt.Token = (string)(dr["Token"]);
+                }
+                 gt.GuideEmail = (string)(dr["GuideEmail"]);
+
+
+              
+                Requests.Add(gt);
+            }
+
+            return Requests;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    private string BuildInsertStatusCommand(Guide_Tourist gt)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values('{0}','{1}','{2}')",gt.GuideEmail, gt.TouristEmail, gt.Status);
+        String prefix = "INSERT INTO Guide_Tourist_StartPlanTrip_Project " + "(GuideEmail,TouristEmail,Status)";
+        command = prefix + sb.ToString();
+        return command;
+    }
+
+    public int UpdateTouristRequestInSQL(Guide_Tourist g)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+        string cStr;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        cStr = "UPDATE Guide_Tourist_StartPlanTrip_Project SET Status = '" + (g.Status) + "' WHERE GuideEmail = '" + (g.GuideEmail) + "' And TouristEmail = '" + g.TouristEmail + "'";
+
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    public List<Guide_Tourist> GetAllGuideRequests(string email)
+    {
+        List<Guide_Tourist> Requests = new List<Guide_Tourist>();
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "select * from Guide_Tourist_StartPlanTrip_Project where GuideEmail = '"+ email +"' And Status = 'send request'";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                Guide_Tourist gt = new Guide_Tourist();
+                    gt.TouristEmail = (string)(dr["TouristEmail"]);
+                gt.Status = (string)(dr["Status"]);
+                Requests.Add(gt);
+            }
+
+            return Requests;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public List<Guide_Tourist> GetAllRequests()
+    {
+        List<Guide_Tourist> Requests = new List<Guide_Tourist>();
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "select * from Guide_Tourist_StartPlanTrip_Project";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                Guide_Tourist gt = new Guide_Tourist();
+                gt.GuideEmail = (string)(dr["GuideEmail"]);
+                gt.TouristEmail = (string)(dr["TouristEmail"]);
+                gt.Status = (string)(dr["Status"]);
+                Requests.Add(gt);
+            }
+
+            return Requests;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public void DeleteLastTripTourist(string touristEmail)
+    {
+        SqlConnection con = null;
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "DELETE FROM TripPoint_project where TouristEmail = '" + touristEmail + "'";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public List<TripPoint> GetAllPointsOfTourist(string touristEmail)
+    {
+        List<TripPoint> AllTouristPoints = new List<TripPoint>();
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "SELECT * FROM TripPoint_Project where TouristEmail = '" + touristEmail + "' order by FromHour";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                TripPoint point = new TripPoint();
+                point.TouristEmail = (string)(dr["TouristEmail"]);
+                point.GuideEmail = (string)(dr["GuideEmail"]);
+                point.AttractionName = (string)(dr["AttractionName"]);
+                if (dr["Address"] != DBNull.Value)
+                {
+                    point.Address = (string)(dr["Address"]);
+                }
+                if (dr["AreaName"] != DBNull.Value)
+                {
+                    point.AreaName = (string)(dr["AreaName"]);
+                }
+                if (dr["Region"] != DBNull.Value)
+                {
+                    point.Region = (string)(dr["Region"]);
+                }
+                if (dr["FullDescription"] != DBNull.Value)
+                {
+                    point.FullDescription = (string)(dr["FullDescription"]);
+                }
+                if (dr["Opening_Hours"] != DBNull.Value)
+                {
+                    point.Opening_Hours = (string)(dr["Opening_Hours"]);
+                }
+
+                point.FromHour = Convert.ToDateTime(dr["FromHour"]).ToString("MM/dd/yyyy hh:mm:ss tt");
+                point.ToHour = Convert.ToDateTime(dr["ToHour"]).ToString("MM/dd/yyyy hh:mm:ss tt");
+                AllTouristPoints.Add(point);
+            }
+
+            return AllTouristPoints;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public int AddPointToSQL(TripPoint tripPoint)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertPointTripCommand(tripPoint);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private string BuildInsertPointTripCommand(TripPoint tripPoint)
+    {
+        String command;
+        DateTime fromHour = Convert.ToDateTime(tripPoint.FromHour.ToString());
+        DateTime toHour = Convert.ToDateTime(tripPoint.ToHour.ToString());
+        
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}')", tripPoint.AttractionName, tripPoint.AreaName, tripPoint.Opening_Hours, tripPoint.Region, tripPoint.Address, tripPoint.GuideEmail, tripPoint.TouristEmail, fromHour.ToString("yyyy-MM-dd HH:mm:ss"), toHour.ToString("yyyy-MM-dd HH:mm:ss"), tripPoint.FullDescription);
+        String prefix = "INSERT INTO TripPoint_Project " + "(AttractionName,AreaName,Opening_Hours,Region,Address,GuideEmail,TouristEmail,FromHour,ToHour,FullDescription)";
+        command = prefix + sb.ToString();
+        return command;
+    }
+
+    public List<string> GetAllTouristsOfGuide(string email)
+    {
+        List<string> AllTourists = new List<string>();
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "SELECT * FROM Guide_Tourist_StartPlanTrip_Project where GuideEmail = '" + email + "'";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+               string a = (string)(dr["TouristEmail"]);
+                AllTourists.Add(a);
+            }
+
+            return AllTourists;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public List<Attraction> GetAllAttractionsFromSQL()
+    {
+        List<Attraction> attractions = new List<Attraction>();
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "SELECT * FROM Attraction_Project";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                Attraction a = new Attraction();
+                a.AreaName = (string)(dr["AreaName"]);
+                a.AttractionCode = Convert.ToInt32(dr["AttractionCode"]);
+                a.AttractionName = (string)(dr["AttractionName"]);
+                a.Opening_Hours = (string)(dr["Opening_Hours"]);
+                //a.FullDescription = (string)(dr["FullDescription"]);
+                a.Address = (string)(dr["Address"]);
+                a.Attraction_Type = (string)(dr["Attraction_Type"]);
+                a.Region = (string)(dr["Region"]);
+                a.X = Convert.ToDouble(dr["X"]);
+                a.Y = Convert.ToDouble(dr["Y"]);
+                attractions.Add(a);
+            }
+
+            return attractions;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public int postAllAtt(Attraction attraction)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertAllAttractionsCommand(attraction);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private string BuildInsertAllAttractionsCommand(Attraction attraction)
+    {
+        String command;
+      
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values('{0}','{1}','{2}',{3},{4},'{5}','{6}','{7}')", attraction.AttractionName, attraction.AreaName, attraction.Opening_Hours, attraction.X, attraction.Y,attraction.Address,attraction.Attraction_Type,attraction.Region);
+        String prefix = "INSERT INTO Attraction_Project " + "(AttractionName,AreaName,Opening_Hours,X,Y,Address,Attraction_Type,Region)";
+        command = prefix + sb.ToString();
+        return command;
+    }
+
     public List<AttractionPointInTrip> GetAttractionsFromSQLByID(int id)
     {
         List<AttractionPointInTrip> attractions = new List<AttractionPointInTrip>();
@@ -274,7 +825,7 @@ public class DBservices
         }
     }
 
-    public Tourist GetAllDetailsFromSQL(int id)
+    public Tourist GetAllDetailsFromSQL(string email)
     {
         Tourist tour = new Tourist();
         List<int> HobbiesList = new List<int>();
@@ -285,7 +836,7 @@ public class DBservices
         {
             con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
 
-            String selectSTR = "select t.Id,t.FirstName,t.LastName,t.email,t.yearOfBirth,t.ProfilePic,t.IntrestInGender,t.FirstTimeInIsrael,t.gender,tp.tripType,tp.FromDate,tp.ToDate,tp.EstimateDate,tp.Duration,tp.Budget,lp.LCode,ep.Code,hp.HCode from TouristProject t join Trip_Plan_Project tp on t.email = tp.TouristEmail join TripPlanIntrest_Project tpi on t.Id = tpi.TouristId join Expertise_Project ep on tpi.ExpertiseCode = ep.Code join Tourist_Language_Project tl on t.Id = tl.IdTourist join Language_Project lp on tl.LanguageLCode = lp.LCode join Hobby_Tourist_Project ht on t.Id = ht.TouristId join Hobby_Project hp on ht.HobbyHCode = hp.HCode where t.Id='" + id + "'";
+            String selectSTR = "select t.Id,t.FirstName,t.LastName,t.email,t.yearOfBirth,t.ProfilePic,t.IntrestInGender,t.FirstTimeInIsrael,t.gender,tp.tripType,tp.FromDate,tp.ToDate,tp.EstimateDate,tp.Duration,tp.Budget,lp.LCode,ep.Code,hp.HCode from TouristProject t join Trip_Plan_Project tp on t.email = tp.TouristEmail left join TripPlanIntrest_Project tpi on t.Id = tpi.TouristId left join Expertise_Project ep on tpi.ExpertiseCode = ep.Code left join Tourist_Language_Project tl on t.Id = tl.IdTourist join Language_Project lp on tl.LanguageLCode = lp.LCode left join Hobby_Tourist_Project ht on t.Id = ht.TouristId join Hobby_Project hp on ht.HobbyHCode = hp.HCode where t.email='" + email + "'";
             SqlCommand cmd = new SqlCommand(selectSTR, con);
 
             // get a reader
@@ -1509,7 +2060,7 @@ public class DBservices
         // use a string builder to create the dynamic string
 
 
-        command = "INSERT INTO TouristProject (FirstName, LastName, email, passwordTourist, gender,yearOfBirth) VALUES ('" + (t.FirstName) + "', '" + (t.LastName) + "', '" + (t.Email) + "','" + (t.PasswordTourist) + "', '" + (t.Gender) + "', '" + (t.YearOfBirth) + "')";
+        command = "INSERT INTO TouristProject (FirstName, LastName, email, passwordTourist, gender,yearOfBirth, Token) VALUES ('" + (t.FirstName) + "', '" + (t.LastName) + "', '" + (t.Email) + "','" + (t.PasswordTourist) + "', '" + (t.Gender) + "', '" + (t.YearOfBirth) + "', '" + (t.Token) + "')";
 
         return command;
     }
@@ -3228,6 +3779,7 @@ public class DBservices
                 Tourist t = new Tourist();
                 t.Email = (string)dr["email"];
                 t.PasswordTourist = (string)dr["passwordTourist"];
+                //t.Token = (string)dr["Token"];
                 touristList.Add(t);
             }
 
@@ -3298,8 +3850,8 @@ public class DBservices
 
         StringBuilder sb = new StringBuilder();
         // use a string builder to create the dynamic string
-        sb.AppendFormat("Values('{0}','{1}','{2}','{3}')", t.Email, t.PasswordTourist,t.FirstName,t.LastName);
-        String prefix = "INSERT INTO TouristProject " + "(email,passwordTourist,FirstName,LastName)";
+        sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}')", t.Email, t.PasswordTourist,t.FirstName,t.LastName,t.Token);
+        String prefix = "INSERT INTO TouristProject " + "(email,passwordTourist,FirstName,LastName,Token)";
         command = prefix + sb.ToString();
 
         return command;

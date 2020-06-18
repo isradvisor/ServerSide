@@ -36,5 +36,7 @@ namespace IsraVisor_server.Controllers
         public void Delete(int id)
         {
         }
+
+
     }
 }

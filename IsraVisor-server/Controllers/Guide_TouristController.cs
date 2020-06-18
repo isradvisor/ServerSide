@@ -30,6 +30,12 @@ namespace IsraVisor_server.Controllers
             g.PostGuideTouristRank(guide_Tourist);
         }
 
+        public List<Tourist> Get(string email)
+        {
+            Guide_Tourist gt = new Guide_Tourist();
+            return gt.GetAllTouristsOfGuide(email);
+        }
+
         // PUT api/<controller>/5
         public void Put(int id, [FromBody]string value)
         {
