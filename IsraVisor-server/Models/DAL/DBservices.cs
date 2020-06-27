@@ -90,6 +90,88 @@ public class DBservices
         }
     }
 
+    public Tourist GetUserDetails(Tourist t)
+    {
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = " select * from TouristProject where email = '" + t.Email +"'";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                
+                t.FirstName = (string)(dr["FirstName"]);
+                t.LastName = (string)(dr["LastName"]);
+                t.ProfilePic = (string)(dr["ProfilePic"]);
+            }
+
+            return t;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public int UploadPicture(Tourist tourist)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+        string cStr;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        cStr = "UPDATE TouristProject SET ProfilePic= '" + (tourist.ProfilePic) + "'  WHERE email = '" + (tourist.Email) + "'";
+
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
     public List<AttractionPointInTrip> GetAttractionsFromSQLByID(int id)
     {
         List<AttractionPointInTrip> attractions = new List<AttractionPointInTrip>();
