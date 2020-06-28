@@ -120,6 +120,15 @@ namespace IsraVisor_server.Controllers
             return tourist.SetBudget(tourist);
         }
 
+        //Edit Profile (Email, FirstName, LastName, SecondEmail)
+        // PUT api/<controller>/EditProfile
+        [HttpPut]
+        [Route("api/Tourist/EditProfile")]
+        public int Put5([FromBody]Tourist tourist)
+        {
+            return tourist.EditProfile(tourist);
+        }
+
         //GetAllTouristDetailsByEmailTourist
         //[HttpGet]
         //[Route("api/Tourist/GetDetails/{id}")]
