@@ -24,10 +24,10 @@ namespace IsraVisor_server.Controllers
         }
 
         // POST api/<controller> //מכניס ניקוד של תייר לSQL 
-        public void Post([FromBody]Guide_Tourist guide_Tourist)
+        public int Post([FromBody]Guide_Tourist guide_Tourist)
         {
             Guide_Tourist g = new Guide_Tourist();
-            g.PostGuideTouristRank(guide_Tourist);
+           return g.PostGuideTouristRank(guide_Tourist);
         }
 
         public List<Tourist> Get(string email)

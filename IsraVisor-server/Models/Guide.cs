@@ -56,14 +56,52 @@ namespace IsraVisor_server.Models
             return null;
         }
 
+        public string SendEmail(message messageContact)
+        {
+            var from = new MailAddress("isravisor@gmail.com", messageContact.Name);
+            var to = new MailAddress("isravisor@gmail.com", "IsraVisor App");
+            const string Password = "Ng123456789";
+
+            SmtpClient smtp = new SmtpClient
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(to.Address, Password)
+            };
+            using (var message = new MailMessage(from, to)
+            {
+                Subject = messageContact.EmailFrom,
+                Body = messageContact.Body
+            })
+            {
+                smtp.Send(message);
+                return "success";
+            }
+            // code in brackets above needed if authentication required 
+
+            //try
+            //{
+            //    client.Send(message);
+            //    return "success";
+            //}
+            //catch (SmtpException ex)
+            //{
+            //    Console.WriteLine(ex.ToString());
+            //    return "error";
+            //}
+        }
+
         //RESET PASSWORD
         public void ResetPassword(object email)
         {
             Guide g = new Guide();
             g = g.GetGuideByEmail(email.ToString());
-            var fromAddress = new MailAddress("avielpalgi@gmail.com", "IsraVisor App");
+            var fromAddress = new MailAddress("isravisor@gmail.com", "IsraVisor App");
             var toAddress = new MailAddress(email.ToString(), g.FirstName);
-            const string fromPassword = "17028792";
+            const string fromPassword = "Ng123456789";
             const string subject = "Reset Password";
             string randPass = RandomPassword();
             string temp = "Hello " + g.FirstName + " " + g.LastName + " your New Password is: " + randPass;

@@ -183,6 +183,8 @@
     <Compile Include="Controllers\LanguageController.cs" />
     <Compile Include="Controllers\LinkController.cs" />
     <Compile Include="Controllers\MatchController.cs" />
+    <Compile Include="Models\Data.cs" />
+    <Compile Include="Models\message.cs" />
     <Compile Include="Models\PushNotData.cs" />
     <Compile Include="Controllers\TouristController.cs" />
     <Compile Include="Controllers\UploadfilesController.cs" />

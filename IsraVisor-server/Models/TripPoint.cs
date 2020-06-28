@@ -17,6 +17,10 @@ namespace IsraVisor_server.Models
         public string Opening_Hours { get; set; }
         public object FromHour { get; set; }
         public object ToHour { get; set; }
+        public string Product_Url { get; set; }
+        public double lng { get; set; }
+        public double lat { get; set; }
+        public string Image { get; set; }
 
         public List<TripPoint> AddTripToTourist(List<TripPoint> tripPoints)
         {

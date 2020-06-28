@@ -93,7 +93,7 @@ public class DBservices
     public Guide_Tourist GetTouristStatus(string email)
     {
         SqlConnection con = null;
-        Guide_Tourist gt = new Guide_Tourist();
+        List<Guide_Tourist> gt = new List<Guide_Tourist>();
         try
         {
             con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
@@ -106,11 +106,104 @@ public class DBservices
 
             while (dr.Read())
             {   // Read till the end of the data into a row
+                Guide_Tourist g = new Guide_Tourist();
                 if (dr["Status"] != DBNull.Value)
                 {
-                    gt.Status = (string)(dr["Status"]);
+                    g.Status = (string)(dr["Status"]);
                 }
-                gt.GuideEmail = (string)(dr["GuideEmail"]);
+                g.GuideEmail = (string)(dr["GuideEmail"]);
+                g.TouristEmail = (string)(dr["TouristEmail"]);
+
+                gt.Add(g);
+            }
+
+            return gt[gt.Count-1];
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+    }
+
+    public int UpdateRankGuideByTourist(Guide_Tourist guide_Tourist)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+        string cStr;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        cStr = "UPDATE Guide_Tourist_Project SET Rank = " + (guide_Tourist.Rank) + ", DateOfRanking = '" +(guide_Tourist.DateOfRanking) + "' WHERE guidegCode = " + (guide_Tourist.guidegCode) + " and TouristId = " + guide_Tourist.TouristId;
+
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    public List<Guide_Tourist> CheckIfTouristGaveRank(Guide_Tourist guide_Tourist)
+    {
+        List<Guide_Tourist> gt = new List<Guide_Tourist>();
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "select * from Guide_Tourist_Project where guidegCode = " + guide_Tourist.guidegCode + " and TouristId = " + guide_Tourist.TouristId;
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                Guide_Tourist g = new Guide_Tourist();
+                if (dr["TouristId"] != DBNull.Value)
+                {
+                    g.TouristId = Convert.ToInt32(dr["TouristId"]);
+                }
+                if (dr["guidegCode"] != DBNull.Value)
+                {
+                    g.guidegCode = Convert.ToInt32(dr["guidegCode"]);
+                }
+                gt.Add(g);
             }
 
             return gt;
@@ -128,6 +221,58 @@ public class DBservices
             }
 
         }
+    }
+
+    public int ChangeTouristPassword(string randPass, string email)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("ConnectionStringName"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildUpdatePassTourist(randPass, email);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private string BuildUpdatePassTourist(string randPass, string email)
+    {
+        String command = "";
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+
+        command = "UPDATE TouristProject SET passwordTourist = '" + randPass + "' WHERE email = " + email;
+        return command;
     }
 
     public int AddRequest(Guide_Tourist gt)
@@ -423,6 +568,22 @@ public class DBservices
                 {
                     point.Opening_Hours = (string)(dr["Opening_Hours"]);
                 }
+                if (dr["Product_Url"] != DBNull.Value)
+                {
+                    point.Product_Url = (string)(dr["Product_Url"]);
+                }
+                if (dr["lat"] != DBNull.Value)
+                {
+                    point.lat = Convert.ToDouble(dr["lat"]);
+                }
+                if (dr["lng"] != DBNull.Value)
+                {
+                    point.lng = Convert.ToDouble(dr["lng"]);
+                }
+                if (dr["Image"] != DBNull.Value)
+                {
+                    point.Image = (string)(dr["Image"]);
+                }
 
                 point.FromHour = Convert.ToDateTime(dr["FromHour"]).ToString("MM/dd/yyyy hh:mm:ss tt");
                 point.ToHour = Convert.ToDateTime(dr["ToHour"]).ToString("MM/dd/yyyy hh:mm:ss tt");
@@ -495,8 +656,8 @@ public class DBservices
         
         StringBuilder sb = new StringBuilder();
         // use a string builder to create the dynamic string
-        sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}')", tripPoint.AttractionName, tripPoint.AreaName, tripPoint.Opening_Hours, tripPoint.Region, tripPoint.Address, tripPoint.GuideEmail, tripPoint.TouristEmail, fromHour.ToString("yyyy-MM-dd HH:mm:ss"), toHour.ToString("yyyy-MM-dd HH:mm:ss"), tripPoint.FullDescription);
-        String prefix = "INSERT INTO TripPoint_Project " + "(AttractionName,AreaName,Opening_Hours,Region,Address,GuideEmail,TouristEmail,FromHour,ToHour,FullDescription)";
+        sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}',{11},{12},'{13}')", tripPoint.AttractionName, tripPoint.AreaName, tripPoint.Opening_Hours, tripPoint.Region, tripPoint.Address, tripPoint.GuideEmail, tripPoint.TouristEmail, fromHour.ToString("yyyy-MM-dd HH:mm:ss"), toHour.ToString("yyyy-MM-dd HH:mm:ss"), tripPoint.FullDescription,tripPoint.Product_Url,tripPoint.lng,tripPoint.lat,tripPoint.Image);
+        String prefix = "INSERT INTO TripPoint_Project " + "(AttractionName,AreaName,Opening_Hours,Region,Address,GuideEmail,TouristEmail,FromHour,ToHour,FullDescription,Product_Url,lng,lat,Image)";
         command = prefix + sb.ToString();
         return command;
     }
@@ -836,7 +997,7 @@ public class DBservices
         {
             con = connect("ConnectionStringName"); // create a connection to the database using the connection String defined in the web config file
 
-            String selectSTR = "select t.Id,t.FirstName,t.LastName,t.email,t.yearOfBirth,t.ProfilePic,t.IntrestInGender,t.FirstTimeInIsrael,t.gender,tp.tripType,tp.FromDate,tp.ToDate,tp.EstimateDate,tp.Duration,tp.Budget,lp.LCode,ep.Code,hp.HCode from TouristProject t join Trip_Plan_Project tp on t.email = tp.TouristEmail left join TripPlanIntrest_Project tpi on t.Id = tpi.TouristId left join Expertise_Project ep on tpi.ExpertiseCode = ep.Code left join Tourist_Language_Project tl on t.Id = tl.IdTourist join Language_Project lp on tl.LanguageLCode = lp.LCode left join Hobby_Tourist_Project ht on t.Id = ht.TouristId join Hobby_Project hp on ht.HobbyHCode = hp.HCode where t.email='" + email + "'";
+            String selectSTR = "select t.Id, t.Token,t.passwordTourist, t.Id,t.FirstName,t.LastName,t.email,t.yearOfBirth,t.ProfilePic,t.IntrestInGender,t.FirstTimeInIsrael,t.gender,tp.tripType,tp.FromDate,tp.ToDate,tp.EstimateDate,tp.Duration,tp.Budget,lp.LCode,ep.Code,hp.HCode from TouristProject t join Trip_Plan_Project tp on t.email = tp.TouristEmail left join TripPlanIntrest_Project tpi on t.Id = tpi.TouristId left join Expertise_Project ep on tpi.ExpertiseCode = ep.Code left join Tourist_Language_Project tl on t.Id = tl.IdTourist join Language_Project lp on tl.LanguageLCode = lp.LCode left join Hobby_Tourist_Project ht on t.Id = ht.TouristId join Hobby_Project hp on ht.HobbyHCode = hp.HCode where t.email='" + email + "'";
             SqlCommand cmd = new SqlCommand(selectSTR, con);
 
             // get a reader
@@ -848,10 +1009,16 @@ public class DBservices
                 tour.FirstName = (string)(dr["FirstName"]);
                 tour.LastName = (string)(dr["LastName"]);
                 tour.Email = (string)(dr["email"]);
+                tour.PasswordTourist = (string)(dr["passwordTourist"]);
+
                 tour.YearOfBirth = Convert.ToDateTime(dr["yearOfBirth"]).ToString("MM/dd/yyyy");
                 if (dr["ProfilePic"] != System.DBNull.Value)
                 {
                     tour.ProfilePic = (string)(dr["ProfilePic"]);
+                }
+                if (dr["Token"] != System.DBNull.Value)
+                {
+                    tour.Token = (string)(dr["Token"]);
                 }
                 if (dr["IntrestInGender"] != System.DBNull.Value)
                 {
@@ -871,11 +1038,11 @@ public class DBservices
                 }
                 if (dr["FromDate"] != System.DBNull.Value)
                 {
-                    tour.FromDate = (string)(dr["FromDate"]);
+                    tour.FromDate = Convert.ToDateTime(dr["FromDate"]).ToString("MM/dd/yyyy");
                 }
                 if (dr["ToDate"] != System.DBNull.Value)
                 {
-                    tour.ToDate = (string)(dr["ToDate"]);
+                    tour.ToDate = Convert.ToDateTime(dr["ToDate"]).ToString("MM/dd/yyyy");
                 }
                 if (dr["EstimateDate"] != System.DBNull.Value)
                 {
@@ -1129,7 +1296,7 @@ public class DBservices
             throw (ex);
         }
 
-        cStr = "UPDATE TouristProject SET passwordTourist = '" + (tourist.PasswordTourist) + "', yearOfBirth = '" + (tourist.YearOfBirth) + "', gender= '" + (tourist.Gender) + "'  WHERE email = '" + (tourist.Email) + "'";
+        cStr = "UPDATE TouristProject SET passwordTourist = '" + (tourist.PasswordTourist) + "', yearOfBirth = '" + (tourist.YearOfBirth) + "', gender= '" + (tourist.Gender) + "', Token= '" + (tourist.Token) + "'  WHERE email = '" + (tourist.Email) + "'";
 
 
         cmd = CreateCommand(cStr, con);             // create the command
@@ -1644,9 +1811,18 @@ public class DBservices
             while (dr.Read())
             {   // Read till the end of the data into a row
                 Guide_Tourist g = new Guide_Tourist();
-                g.Rank = Convert.ToInt32(dr["Rank"]);
-                g.TouristId = Convert.ToInt32(dr["TouristId"]);
-                g.guidegCode = Convert.ToInt32(dr["guidegCode"]);
+                if (dr["Rank"] != System.DBNull.Value)
+                {
+                    g.Rank = Convert.ToInt32(dr["Rank"]);
+                }
+                if (dr["TouristId"] != System.DBNull.Value)
+                {
+                    g.TouristId = Convert.ToInt32(dr["TouristId"]);
+                }
+                if (dr["guidegCode"] != System.DBNull.Value)
+                {
+                    g.guidegCode = Convert.ToInt32(dr["guidegCode"]);
+                }
                 gList.Add(g);
             }
             return gList;

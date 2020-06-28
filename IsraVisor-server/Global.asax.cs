@@ -27,7 +27,7 @@ namespace IsraVisor_server
             System.Timers.Timer timer24Hours = new System.Timers.Timer();
             // Timer interval is set in miliseconds,
             // In this case, we'll run a task every minute
-            timScheduledTask.Interval = 180 * 1000;
+            timScheduledTask.Interval = 5 * 1000;
             timer24Hours.Interval = 86400000;
             timer24Hours.Enabled = true;
             timScheduledTask.Enabled = true;

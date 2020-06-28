@@ -36,6 +36,22 @@ namespace IsraVisor_server.Models
             return db.GetTouristStatus(email);
         }
 
+        public List<Guide_Tourist> GetAllListStatus(List<Tourist> tourists)
+        {
+            DBservices db = new DBservices();
+            List<Guide_Tourist> gt = new List<Guide_Tourist>();
+            for (int i = 0; i < tourists.Count; i++)
+            {
+                Guide_Tourist g = new Guide_Tourist();
+                g = db.GetTouristStatus(tourists[i].Email);
+                if (g.Status == "Start Chat")
+                {
+                    gt.Add(g);
+                }
+            }
+            return gt;
+        }
+
         public List<Guide_Tourist> GetRequestsFromSQL(string email)
         {
             DBservices db = new DBservices();
@@ -70,11 +86,36 @@ namespace IsraVisor_server.Models
         }
 
         //מכניסה ניקוד חדש שתייר נתן למדריך
-        public void PostGuideTouristRank(Guide_Tourist guide_Tourist)
+        public int PostGuideTouristRank(Guide_Tourist guide_Tourist)
         {
+            int num = 0;
             DBservices db = new DBservices();
-            db.PostRankGuideByTourist(guide_Tourist);
+           List<Guide_Tourist> gt = db.CheckIfTouristGaveRank(guide_Tourist);
+            if (gt.Count > 0)
+            {
+                for (int i = 0; i < gt.Count; i++)
+                {
+                    if (guide_Tourist.guidegCode == gt[i].guidegCode && guide_Tourist.TouristId == gt[i].TouristId)
+                    {
+                        db.UpdateRankGuideByTourist(guide_Tourist);
+                        num = 1;
+                    }
+                    else
+                    {
+                        db.PostRankGuideByTourist(guide_Tourist);
+                        num = 1;
+                    }
+                }
+
+            }
+            else
+            {
+                db.PostRankGuideByTourist(guide_Tourist);
+                num = 1;
+            }
+
             GetAllRanksOfGuide(guide_Tourist.guidegCode);
+            return num;
         }
 
         public List<Guide_Tourist> UpdateRequest(Guide_Tourist g)

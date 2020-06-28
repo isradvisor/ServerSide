@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
+using System.Text;
 using System.Web;
 
 namespace IsraVisor_server.Models
@@ -50,7 +53,15 @@ namespace IsraVisor_server.Models
         public Tourist LogIn(Tourist tourist)
         {
             DBservices db = new DBservices();
-            return db.LogInCheck(tourist);
+            Tourist t =  db.LogInCheck(tourist);
+            if (t.FirstName != null)
+            {
+                return db.GetAllDetailsFromSQL(t.Email);
+            }
+            else {
+                return null;
+            }
+
         }
 
 
@@ -158,6 +169,88 @@ namespace IsraVisor_server.Models
                 return 3;
             }
 
+        }
+
+        public int ResetPassword(string email)
+        {
+            Tourist t = new Tourist();
+            t = t.GetAllDetails(email);
+            if (t.Email != null)
+            {
+                var fromAddress = new MailAddress("isravisor@gmail.com", "IsraVisor App");
+                var toAddress = new MailAddress(email.ToString(), t.FirstName);
+                const string fromPassword = "Ng123456789";
+                const string subject = "Reset Password";
+                string randPass = RandomPassword();
+                string temp = "Hello " + t.FirstName + " " + t.LastName + " your New Password is: " + randPass;
+                string body = temp;
+
+                var smtp = new SmtpClient
+                {
+                    Host = "smtp.gmail.com",
+                    Port = 587,
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(fromAddress.Address, fromPassword)
+                };
+                using (var message = new MailMessage(fromAddress, toAddress)
+                {
+                    Subject = subject,
+                    Body = body
+                })
+                {
+                    smtp.Send(message);
+                }
+                DBservices db = new DBservices();
+                int num = db.ChangeTouristPassword(randPass, t.Email);
+                if (num == 1)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+                // db.ChangePass(randPass, g.gCode);
+            }
+            else {
+                return 0;
+            }
+
+        }
+
+        // Generate a random password of a given length (optional)  
+        public string RandomPassword(int size = 10)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(RandomString(4, true));
+            builder.Append(RandomNumber(1000, 9999));
+            builder.Append(RandomString(2, false));
+            return builder.ToString();
+        }
+        // Generate a random number between two numbers    
+        public int RandomNumber(int min, int max)
+        {
+            Random random = new Random();
+            return random.Next(min, max);
+        }
+
+        // Generate a random string with a given size and case.   
+        // If second parameter is true, the return string is lowercase  
+        public string RandomString(int size, bool lowerCase)
+        {
+            StringBuilder builder = new StringBuilder();
+            Random random = new Random();
+            char ch;
+            for (int i = 0; i < size; i++)
+            {
+                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
+                builder.Append(ch);
+            }
+            if (lowerCase)
+                return builder.ToString().ToLower();
+            return builder.ToString();
         }
 
         public int TouristTripType(Tourist tourist)

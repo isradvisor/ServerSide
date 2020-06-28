@@ -25,6 +25,14 @@ namespace IsraVisor_server.Controllers
             return gt.GetRequestsFromSQL(email);
         }
 
+        [HttpPost]
+        [Route("api/BuildTrip/GetAllListTouristsStatus")]
+        public List<Guide_Tourist> GetAllListStatus(List<Tourist> Tourists)
+        {
+            Guide_Tourist gt = new Guide_Tourist();
+           return gt.GetAllListStatus(Tourists);
+        }
+
         [HttpGet]
         [Route("api/BuildTrip/GetTouristStatus")]
         public Guide_Tourist GetTouristStatus(string email)

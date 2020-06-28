@@ -150,6 +150,21 @@ namespace IsraVisor_server.Controllers
         public void Delete(int id)
         {
         }
+        [HttpPost]
+        [Route("api/Tourist/Push")]
+        public string send(PushNotData pnd)
+        {
+
+           return PostNotif(pnd);
+        }
+
+        [HttpPost]
+        [Route("api/Tourist/Reset")]
+        public int Reset([FromBody]string email)
+        {
+            Tourist tour = new Tourist();
+           return tour.ResetPassword(email);
+        }
 
         [Route("sendpushnotification")]
         public string PostNotif([FromBody]PushNotData pnd)
@@ -164,8 +179,9 @@ namespace IsraVisor_server.Controllers
                 to = pnd.to,
                 title = pnd.title,
                 body = pnd.body,
-                //badge = pnd.badge,
-                //data = pnd.data//new { name = "nir", grade = 100 }
+                sound = pnd.sound,
+               data = pnd.data//new { name = "nir", grade = 100 }
+                               //badge = pnd.badge,
             };
             string postData = new JavaScriptSerializer().Serialize(objectToSend);
             byte[] byteArray = Encoding.UTF8.GetBytes(postData);

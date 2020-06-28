@@ -64,6 +64,13 @@ namespace IsraVisor_server.Controllers
              checkGuide.ResetPassword(guide.Email);
         }
 
+        [HttpPost]
+        [Route("api/Guide/SendEmailToApp")]
+        public string sendEmail([FromBody]message message)
+        {
+            Guide checkGuide = new Guide();
+           return checkGuide.SendEmail(message);
+        }
 
         [HttpPost]
         [Route("api/Guide/UpdateProfilePic")]

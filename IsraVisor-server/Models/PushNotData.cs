@@ -2,10 +2,12 @@
 {
     public class PushNotData
     {
-        internal object to;
-        internal object title;
-        internal object body;
+
+        public object to { get; set; }
+        public object title { get; set; }
+        public object body { get; set; }
+        public object sound { get; set; }
         internal object badge;
-        internal object data;
+        public Data data { get; set; }
     }
 }

@@ -85,6 +85,10 @@ namespace IsraVisor_server.Models
             List<CalculateMatch> CalList = new List<CalculateMatch>();
             DBservices db = new DBservices();
             List<Match> mList = Others;
+            //double standardDeviation = 0;
+            //double avg = mList.Sum(item => item.Age)/mList.Count;
+            //double sum = mList.Sum(d => (d.Age - avg) * (d.Age - avg));
+            //standardDeviation = Math.Sqrt(sum / mList.Count);
             for (int i = 0; i < mList.Count; i++)
             {
                 double rankLang = 0;
