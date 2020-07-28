@@ -24,11 +24,13 @@ namespace IsraVisor_server.Models
         public string Token { get; set; }
         public string SecondEmail { get; set; }
 
-        public List<Tourist> readAllTourist()
+        public Tourist GetUserDetails(Tourist t)
         {
-            throw new NotImplementedException();
+            DBservices db = new DBservices();
+            return db.GetUserDetails(t);
         }
 
+      
         public int LanguageCode { get; set; }
         public List<int> Hobbies { get; set; }
         public List<int> Expertises { get; set; }
@@ -112,6 +114,14 @@ namespace IsraVisor_server.Models
             return db.EditProfile(tourist);
         }
 
+        //0= db error
+        //1= update succeeded
+        public int UploadPicture(Tourist tourist)
+        {
+            DBservices db = new DBservices();
+            return db.UploadPicture(tourist);
+        }
+
         public List<int> Interest(Tourist tourist)
         {
             List<int> touristiD_AffectedRows = new List<int>();
@@ -139,10 +149,12 @@ namespace IsraVisor_server.Models
             return touristiD_AffectedRows;
         }
 
-        public Tourist GetAllDetails(string email)
+       
+
+        public Tourist GetAllDetails(int id)
         {
             DBservices db = new DBservices();
-            return db.GetAllDetailsFromSQL(email);
+            return db.GetAllDetailsFromSQL(id);
         }
 
         public int GoogleFacebookSignUpFirstTime(Tourist tourist)

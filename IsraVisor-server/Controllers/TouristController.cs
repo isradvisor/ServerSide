@@ -14,11 +14,22 @@ namespace IsraVisor_server.Controllers
     public class TouristController : ApiController
     {
         // GET api/<controller>
-        public List<Tourist> Get()
+        //public List<Tourist> Get()
+        //{
+        //    Tourist t = new Tourist();
+        //    return t.readTourist();
+        //}
+
+        //Get User Details
+       //[HttpGet]
+       //[Route("api/Tourist/{email}")]
+        public Tourist Get(string email)
         {
             Tourist t = new Tourist();
-            return t.readTourist();
+            t.Email = email;
+            return t.GetUserDetails(t);
         }
+
         //Log In Check
         // POST api/<controller>
         public Tourist Post([FromBody]Tourist tourist)
@@ -129,6 +140,15 @@ namespace IsraVisor_server.Controllers
             return tourist.EditProfile(tourist);
         }
 
+        //UploadPicture (Email, ProfilePic)
+        // PUT api/<controller>/EditProfile
+        [HttpPut]
+        [Route("api/Tourist/UploadPicture")]
+        public int Put6([FromBody]Tourist tourist)
+        {
+            return tourist.UploadPicture(tourist);
+        }
+
         //GetAllTouristDetailsByEmailTourist
         //[HttpGet]
         //[Route("api/Tourist/GetDetails/{id}")]
@@ -217,3 +237,4 @@ namespace IsraVisor_server.Controllers
         }
     }
 }
+
