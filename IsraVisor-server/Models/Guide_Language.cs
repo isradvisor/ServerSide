@@ -10,13 +10,6 @@ namespace IsraVisor_server.Models
         public int Guide_Code { get; set; }
         public int Language_Code { get; set; }
 
-        //מקבלת רשימת שפות מהSQL
-        public List<Guide_Language> ReadGuideLangsFromSQL()
-        {
-            DBservices db = new DBservices();
-            return db.GetGuideLangsFromSQL();
-        }
-
         //מכניסה שפות של מדריך ספציפי//לבדוק אם הכרחי הפונקציה
         public int PostLanguagesGuideToSQL(Guide_Language guidesLanguages)
         {

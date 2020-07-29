@@ -33,7 +33,9 @@ namespace IsraVisor_server.Models
         public Guide_Tourist GetTouristStatus(string email)
         {
             DBservices db = new DBservices();
-            return db.GetTouristStatus(email);
+           
+                return db.GetTouristStatus(email);
+           
         }
 
         public List<Guide_Tourist> GetAllListStatus(List<Tourist> tourists)
@@ -121,7 +123,8 @@ namespace IsraVisor_server.Models
         public List<Guide_Tourist> UpdateRequest(Guide_Tourist g)
         {
             DBservices db = new DBservices();
-            if (db.UpdateTouristRequestInSQL(g) == 1)
+            int num = db.UpdateTouristRequestInSQL(g);
+            if (num == 1)
             {
                 return db.GetAllGuideRequests(g.GuideEmail);
             }
@@ -133,16 +136,25 @@ namespace IsraVisor_server.Models
 
         public int AddRequest(Guide_Tourist gt)
         {
+            int num = 0;
             DBservices db = new DBservices();
-           int num = db.AddRequest(gt);
+            Guide_Tourist guideTourist = db.GetRequestByTouristEmailAndGuideEmail(gt.TouristEmail, gt.GuideEmail);
+            if (guideTourist.GuideEmail != null)
+            {
+                num = db.updateStatusGuideTourist(gt);
+            }
+            else
+            {
+                num = db.AddRequest(gt);
+           }
             return num;
          
         }
 
-        public List<Guide_Tourist> GetAllUsersInChatToken()
-        {
-            DBservices db = new DBservices();
-            return db.GetTokensOfUsersInChat();
-        }
+        //public List<Guide_Tourist> GetAllUsersInChatToken()
+        //{
+        //    DBservices db = new DBservices();
+        //    return db.GetTokensOfUsersInChat();
+        //}
     }
 }

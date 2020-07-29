@@ -17,15 +17,6 @@ namespace IsraVisor_server.Controllers
             return l.ReadFromSQL();
         }
 
-        //מקבל את רשימת השפות של המדריכים **לבדוק אם הכרחי הפונקציה**ולעדכן
-        [HttpGet]
-        [Route("api/Language/GetGuideLanguages")]
-        public List<Guide_Language> GetGuideLan()
-        {
-            Guide_Language guideLan = new Guide_Language();
-            return guideLan.ReadGuideLangsFromSQL();
-        }
-
         // GET api/<controller>/5 //מקבלת רשימת שפות של מדריך ספציפי
         public List<Guide_Language> Get(int id)
         {
@@ -34,13 +25,17 @@ namespace IsraVisor_server.Controllers
         }
 
         // POST api/<controller>
-        public void Post([FromBody]string value)
+        public List<Language> Post([FromBody]Language lang)
         {
+            Language ln = new Language();
+            return ln.AddNewLanguage(lang);
         }
 
         // PUT api/<controller>/5
-        public void Put(int id, [FromBody]string value)
+        public List<Language> Put(Language lang)
         {
+            Language lng = new Language();
+            return lng.UpdateLanguage(lang);
         }
 
         // DELETE: api/Student?id=5 //מוחקת רשימת שפות של מדריך ספציפי
@@ -49,6 +44,15 @@ namespace IsraVisor_server.Controllers
         {
             Guide_Language g = new Guide_Language();
             g.DeleteGuideLanguages(id);
+        }
+
+        // DELETE: api/Student?id=5 //מוחקת רשימת שפות של מדריך ספציפי
+        [HttpDelete]
+        [Route("api/Language/DeleteLang")]
+        public List<Language> DeleteLanguage(Language lang)
+        {
+            Language lng = new Language();
+            return lng.DeleteLanguage(lang);
         }
     }
 }

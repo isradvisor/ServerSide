@@ -26,18 +26,27 @@ namespace IsraVisor_server.Models
         {
             DBservices db = new DBservices();
             db.DeleteLastTripTourist(tripPoints[0].TouristEmail);
-            for (int i = 0; i < tripPoints.Count; i++)
+            if (tripPoints.Count > 0)
             {
-                db.AddPointToSQL(tripPoints[i]);
+                for (int i = 0; i < tripPoints.Count; i++)
+                {
+                    db.AddPointToSQL(tripPoints[i]);
+                }
             }
-            
-            return db.GetAllPointsOfTourist(tripPoints[0].TouristEmail);
+            if (db.GetAllPointsOfTourist(tripPoints[0].TouristEmail) == null)
+            {
+                return null;
+            }
+            else
+            {
+                return db.GetAllPointsOfTourist(tripPoints[0].TouristEmail);
+            }
         }
 
         public List<TripPoint> GetAllPointsFromSQL(string email)
         {
             DBservices db = new DBservices();
-           return db.GetAllPointsOfTourist(email);
+            return db.GetAllPointsOfTourist(email);
         }
     }
 }

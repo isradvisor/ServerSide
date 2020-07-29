@@ -30,10 +30,11 @@ namespace IsraVisor_server.Models
         }
 
         //מוחקת התמחויות של מדריך ספציפי
-        public void DeleteGuideHobbies(int id)
+        public List<Hobby> DeleteGuideHobbies(int id)
         {
             DBservices db = new DBservices();
             db.DeleteAllGuideHobbies(id);
+            return db.GetAllHobbiesFromSQL();
         }
     }
 }

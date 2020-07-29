@@ -10,13 +10,14 @@ namespace IsraVisor_server.Controllers
 {
     public class BuildTripController : ApiController
     {
-        // GET api/<controller>
+        //GET api/<controller>  GET ALL Requests 
         public IEnumerable<Guide_Tourist> Get()
         {
             Guide_Tourist gt = new Guide_Tourist();
             return gt.GetAllRequests();
         }
-        // GET api/<controller>/5
+
+        // Get All Request by email guide
         [HttpGet]
         [Route("api/BuildTrip/GetRequests")]
         public List<Guide_Tourist> GetRequests(string email)
@@ -25,6 +26,7 @@ namespace IsraVisor_server.Controllers
             return gt.GetRequestsFromSQL(email);
         }
 
+        //Get all Tourist status = 'Start Chat'
         [HttpPost]
         [Route("api/BuildTrip/GetAllListTouristsStatus")]
         public List<Guide_Tourist> GetAllListStatus(List<Tourist> Tourists)
@@ -33,6 +35,7 @@ namespace IsraVisor_server.Controllers
            return gt.GetAllListStatus(Tourists);
         }
 
+        //Get Tourist's status by tourist email
         [HttpGet]
         [Route("api/BuildTrip/GetTouristStatus")]
         public Guide_Tourist GetTouristStatus(string email)
@@ -40,58 +43,21 @@ namespace IsraVisor_server.Controllers
             Guide_Tourist gt = new Guide_Tourist();
             return gt.GetTouristStatus(email);
         }
-
-
-        // GET api/<controller>/5
-        [HttpGet]
-        [Route("api/BuildTrip/GetCities/{id}")]
-        public List<AreaPointInTrip> GetCities(int id)
-        {
-            AreaPointInTrip cities = new AreaPointInTrip();
-            return cities.GetCitiesByIdPlan(id);
-        }
-        [HttpGet]
-        [Route("api/BuildTrip/GetAttractions/{id}")]
-        public List<AttractionPointInTrip> GetAttractions(int id)
-        {
-            AttractionPointInTrip attractions = new AttractionPointInTrip();
-            return attractions.GetAttractionsById(id);
-        }
-        [HttpGet]
-        [Route("api/BuildTrip/GetAllAttractions")]
-        public List<Attraction> GetAllAttractions()
-        {
-            Attraction att = new Attraction();
-            return att.GetAllAttractionsFromSQL();
-        }
-        [HttpPost]
-        [Route("api/BuildTrip/AddAttraction")]
-        public AttractionPointInTrip PostAttraction(AttractionPointInTrip attraction)
-        {
-            AttractionPointInTrip a = new AttractionPointInTrip();
-            return a.AddAttractionToSQL(attraction);
-        }
-        [HttpPost]
-        [Route("api/BuildTrip/AddAllAtractions")]
-        public int postAllAttractions(List<Attraction> attractions)
-        {
-            Attraction att = new Attraction();
-           return att.postAllAtractionsToSQL(attractions);
-        }
-
+      
         // GET api/<controller>/5
         public string Get(int id)
         {
             return "value";
         }
-        
-        // GET api/<controller>?email=aaa
+
+        //// GET api/<controller>?email=aaa    Get all points of trip by tourist email
         public List<TripPoint> Get(string email)
         {
             TripPoint point = new TripPoint();
             return point.GetAllPointsFromSQL(email);
         }
 
+        //Add status request
         [HttpPost]
         [Route("api/BuildTrip/AddRequest")]
         public int PostRequest(Guide_Tourist gt)
@@ -100,40 +66,28 @@ namespace IsraVisor_server.Controllers
             return g.AddRequest(gt);
         }
 
-
-        //public void Timer()
-        //{
-        //    var Startimer = TimeSpan.Zero;
-        //    var EndTimer = TimeSpan.FromSeconds(3);
-        //    var timer = new System.Threading.Timer((e) =>
-        //    {
-        //        string email = "";
-        //        Get(email);
-        //    });
-        //}
-
-        // POST api/<controller>
-        public List<TripPoint> Post([FromBody] List<TripPoint> tripPoints )
+        //Add tourist trip
+        [HttpPost]
+        [Route("api/BuildTrip/GetAtt")]
+        public List<TripPoint> PutPoint(List<TripPoint> tripPoints)
         {
             TripPoint point = new TripPoint();
-          return point.AddTripToTourist(tripPoints);
+            return point.AddTripToTourist(tripPoints);
+
         }
 
-        // PUT api/<controller>/5
+        // PUT api/<controller>/5   Update tourist request
         public List<Guide_Tourist> Put(Guide_Tourist g)
         {
             Guide_Tourist gt = new Guide_Tourist();
-           return gt.UpdateRequest(g);
+            return gt.UpdateRequest(g);
         }
 
-        private void UpdateRequest(Guide_Tourist g)
-        {
-            throw new NotImplementedException();
-        }
 
         // DELETE api/<controller>/5
         public void Delete(int id)
         {
         }
+
     }
 }

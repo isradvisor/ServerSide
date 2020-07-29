@@ -56,11 +56,13 @@ namespace IsraVisor_server.Models
             return null;
         }
 
+       
+
         public string SendEmail(message messageContact)
         {
-            var from = new MailAddress("isravisor@gmail.com", messageContact.Name);
-            var to = new MailAddress("isravisor@gmail.com", "IsraVisor App");
-            const string Password = "Ng123456789";
+            var from = new MailAddress("isradvisor@gmail.com", messageContact.Name);
+            var to = new MailAddress("isradvisor@gmail.com", "IsraAdvisor App");
+            const string Password = "bgroup10_50290";
 
             SmtpClient smtp = new SmtpClient
             {
@@ -95,13 +97,13 @@ namespace IsraVisor_server.Models
         }
 
         //RESET PASSWORD
-        public void ResetPassword(object email)
+        public Guide ResetPassword(object email)
         {
             Guide g = new Guide();
             g = g.GetGuideByEmail(email.ToString());
-            var fromAddress = new MailAddress("isravisor@gmail.com", "IsraVisor App");
+            var fromAddress = new MailAddress("isradvisor@gmail.com", "IsraAdvisor App");
             var toAddress = new MailAddress(email.ToString(), g.FirstName);
-            const string fromPassword = "Ng123456789";
+            const string fromPassword = "bgroup10_50290";
             const string subject = "Reset Password";
             string randPass = RandomPassword();
             string temp = "Hello " + g.FirstName + " " + g.LastName + " your New Password is: " + randPass;
@@ -126,6 +128,10 @@ namespace IsraVisor_server.Models
             }
             DBservices db = new DBservices();
             db.ChangePass(randPass,g.gCode);
+
+            g.PasswordGuide = randPass;
+            g.Email = email.ToString();
+            return g;
         }
         public Guide GetGuideGovIlByLicenseNum(int num)
         {
@@ -243,13 +249,34 @@ namespace IsraVisor_server.Models
                 return null;
             }
         }
+        //הרשמת מדריך
+        public int PostGuideToCheckSignUp(Guide guideCheck)
+        {
+            DBservices db = new DBservices();
+            Guide tempGuide = db.GetGuideByEmailFromSQL(guideCheck.Email);
+            if (tempGuide.Email == guideCheck.Email)
+            {
+
+                return 2;
+            }
+            else
+            {
+             return db.PostGuideToSQL(guideCheck);
+            }
+        }
 
         //בודקת אם קיים מדריך
         public Guide PostGuideToCheck(Guide guideCheck)
         {
             DBservices db = new DBservices();
            Guide tempGuide = db.GetGuideByEmailFromSQL(guideCheck.Email);
-            if (guideCheck.FirstName == null) //check if click on sign in or other registration..
+
+            //check facebook google
+            if (guideCheck.PasswordGuide == "NoPassword")
+            {
+                return tempGuide;
+            }
+            else
             {
                 if (guideCheck.PasswordGuide == tempGuide.PasswordGuide) //בודק אם הסיסמה נכונה
                 {
@@ -260,17 +287,19 @@ namespace IsraVisor_server.Models
                     return null;
                 }
             }
-            else //אם נכנס דרך ההרשמה ולא דרך ההתחברות
-            {
-                if (tempGuide.Email == null) //בודק אם קיים מייל
-                {
-                    return PostGuideToSQL(guideCheck); //מכניס מדריך חדש
-                }
-                else
-                {
-                    return tempGuide;
-                }
-            }
+              
+            //}
+            //else //אם נכנס דרך ההרשמה ולא דרך ההתחברות
+            //{
+            //    if (tempGuide.Email == null) //בודק אם קיים מייל
+            //    {
+            //        return PostGuideToSQL(guideCheck); //מכניס מדריך חדש
+            //    }
+            //    else
+            //    {
+            //        return tempGuide;
+            //    }
+            //}
 
         }
     }

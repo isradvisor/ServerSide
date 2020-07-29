@@ -27,7 +27,7 @@ namespace IsraVisor_server.Controllers
         {
             Tourist t = new Tourist();
             t.Email = email;
-            return t.GetUserDetails(t);
+            return t.GetUserDetails(t.Email);
         }
 
         //Log In Check
@@ -149,23 +149,6 @@ namespace IsraVisor_server.Controllers
             return tourist.UploadPicture(tourist);
         }
 
-        //GetAllTouristDetailsByEmailTourist
-        //[HttpGet]
-        //[Route("api/Tourist/GetDetails/{id}")]
-        public Tourist Get(string email)
-        {
-            Tourist t = new Tourist();
-            return t.GetAllDetails(email);
-        }
-
-        [HttpGet]
-        [Route("api/Tourist/GetAllTokensOfUsersInChat")]
-        public List<Guide_Tourist> GetAllUsersInChat()
-        {
-            Guide_Tourist gt = new Guide_Tourist();
-           return gt.GetAllUsersInChatToken();
-        }
-
         // DELETE api/<controller>/5
         public void Delete(int id)
         {
@@ -180,7 +163,7 @@ namespace IsraVisor_server.Controllers
 
         [HttpPost]
         [Route("api/Tourist/Reset")]
-        public int Reset([FromBody]string email)
+        public PasswordReset Reset([FromBody]string email)
         {
             Tourist tour = new Tourist();
            return tour.ResetPassword(email);

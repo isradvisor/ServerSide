@@ -11,7 +11,7 @@ namespace IsraVisor_server.Controllers
     public class ExpertiseController : ApiController
     {
         // GET api/<controller>מקבל את רשימת ההתמחויות
-        public IEnumerable<Expertise> Get()
+        public List<Expertise> Get()
         {
             Expertise ex = new Expertise();
             return ex.GetAllExpertises();
@@ -31,16 +31,37 @@ namespace IsraVisor_server.Controllers
             return gExper.PostAllGuideExpertises(ex);
         }
 
-        // PUT api/<controller>/5
-        public void Put(int id, [FromBody]string value)
+        // POST api/<controller>  //מוסיף התמחות לשרת
+        [HttpPost]
+        [Route("api/Expertise/AddNew")]
+        public List<Expertise> PostExpertise([FromBody]Expertise exper)
         {
+            Expertise ex = new Expertise();
+            return ex.AddNewExpertise(exper);
+        }
+
+        // PUT api/<controller>/5
+        public List<Expertise> Put(Expertise ex)
+        {
+            Expertise expertise = new Expertise();
+            return expertise.UpdateExpertise(ex);
         }
 
         // DELETE api/<controller>/5 //מוחק התמחויות של מדריך ספציפי
+        [HttpDelete]
         public void Delete(int id)
         {
             Guide_Expertise g = new Guide_Expertise();
             g.DeleteExpertisesGuide(id);
+        }
+
+        // DELETE  //מוחק התמחות
+        [HttpDelete]
+        [Route("api/Expertise/DeleteExpertise")]
+        public List<Expertise> DeleteExpertise(Expertise exp)
+        {
+            Expertise exer = new Expertise();
+           return exer.DeleteExpertise(exp);
         }
     }
 }

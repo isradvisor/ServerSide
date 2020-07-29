@@ -58,22 +58,12 @@
         function errorCBMatchGet(err) {console.log(err) }
 
         function postTourist() {
-            Tourist = { "Email": "sales.agsense@gmail.com" }
-                //"FirstName": "Gal",
-                //"LastName": "Ben Zvi",
-                //"SecondEmail": "galbz123@gmail.com",
-            //    //"FirstTimeInIsrael": "false",
-            //    //"PasswordTourist": "1234",
-            //    //"Gender": "Female",
-            //    //"YearOfBirth": "12-17-1993",
-            //    //"TripType": "Couple"
-               
-
-            
-            //id = [4, 83, 129];
-
+            Tourist = { "Email": "popop@gmail.com" }
+        
             ajaxCall("Get", "../../api/Tourist?email=" + Tourist.Email, "", successTourist, errorTourist)
         }
+
+
         function successTourist(data) {
             console.log(data)
         }
@@ -262,11 +252,22 @@
             ajaxCall("GET", "../../api/Guide_Tourist/" + 106, "", successCBPut, errorCBPut)
 
         }
+
+
+        function GetStatusTourist() {
+            Tourist = { "Email": "vvv@gmail.com" }
+
+            ajaxCall("Get", "../../api/BuildTrip/GetTouristStatus?email=" + Tourist.Email, "", successTourist, errorTourist)
+
+        }
+      
     </script>
   
 </head>
 
 <body>
+    <button onclick="GetStatusTourist()">StatusTourist</button>
+
     <button onclick="GetAPIGOOGLE()">dddddddddddddd</button>
     <button onclick="GetRank()">Get RANK GUIDE</button>
     <button onclick="insertRank()">INSERT RANK</button>

@@ -53,16 +53,16 @@ namespace IsraVisor_server
 
         void FirstTask()
         {
-            // Here is the code we need to execute periodically
-            DBservices db = new DBservices();
-            List<Guide_Tourist> listTokens = db.GetTokensOfUsersInChat();
-            for (int i = 0; i < listTokens.Count; i++)
-            {
-                if (listTokens[i].Token != null)
-                {
-                    sendMessage(listTokens[i]);
-                }
-            }
+            //// Here is the code we need to execute periodically
+            //DBservices db = new DBservices();
+            ////List<Guide_Tourist> listTokens = db.GetTokensOfUsersInChat();
+            //for (int i = 0; i < listTokens.Count; i++)
+            //{
+            //    if (listTokens[i].Token != null)
+            //    {
+            //        sendMessage(listTokens[i]);
+            //    }
+            //}
         }
        void sendMessage(Guide_Tourist gt)
         {

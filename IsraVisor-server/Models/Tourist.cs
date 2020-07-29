@@ -24,14 +24,16 @@ namespace IsraVisor_server.Models
         public string Token { get; set; }
         public string SecondEmail { get; set; }
 
-        public Tourist GetUserDetails(Tourist t)
+        //public List<Tourist> readAllTourist()
+        public Tourist GetUserDetails(string email)
         {
             DBservices db = new DBservices();
-            return db.GetUserDetails(t);
+            return db.GetAllDetailsFromSQL(email);
         }
 
       
         public int LanguageCode { get; set; }
+        public string LNameEnglish { get; set; }
         public List<int> Hobbies { get; set; }
         public List<int> Expertises { get; set; }
         public string TripType { get; set; }
@@ -149,13 +151,14 @@ namespace IsraVisor_server.Models
             return touristiD_AffectedRows;
         }
 
+        //public Tourist GetAllDetails(string email)
        
 
-        public Tourist GetAllDetails(int id)
-        {
-            DBservices db = new DBservices();
-            return db.GetAllDetailsFromSQL(id);
-        }
+        //public Tourist GetAllDetails(int id)
+        //{
+        //    DBservices db = new DBservices();
+        //    return db.GetAllDetailsFromSQL(email);
+        //}
 
         public int GoogleFacebookSignUpFirstTime(Tourist tourist)
         {
@@ -183,15 +186,19 @@ namespace IsraVisor_server.Models
 
         }
 
-        public int ResetPassword(string email)
+        public PasswordReset ResetPassword(string email)
         {
+            DBservices db = new DBservices();
             Tourist t = new Tourist();
-            t = t.GetAllDetails(email);
+            t = (db.GetAllDetailsFromSQL(email));
+            PasswordReset pr = new PasswordReset();
+            pr.TouristEmail = t.Email;
+            pr.OldPassword = t.PasswordTourist;
             if (t.Email != null)
             {
-                var fromAddress = new MailAddress("isravisor@gmail.com", "IsraVisor App");
+                var fromAddress = new MailAddress("isradvisor@gmail.com", "IsraAdvisor App");
                 var toAddress = new MailAddress(email.ToString(), t.FirstName);
-                const string fromPassword = "Ng123456789";
+                const string fromPassword = "bgroup10_50290";
                 const string subject = "Reset Password";
                 string randPass = RandomPassword();
                 string temp = "Hello " + t.FirstName + " " + t.LastName + " your New Password is: " + randPass;
@@ -214,20 +221,20 @@ namespace IsraVisor_server.Models
                 {
                     smtp.Send(message);
                 }
-                DBservices db = new DBservices();
                 int num = db.ChangeTouristPassword(randPass, t.Email);
                 if (num == 1)
                 {
-                    return 1;
+                    pr.NewPassword = randPass;
+                    return pr;
                 }
                 else
                 {
-                    return 0;
+                    return null;
                 }
                 // db.ChangePass(randPass, g.gCode);
             }
             else {
-                return 0;
+                return null;
             }
 
         }
@@ -268,7 +275,16 @@ namespace IsraVisor_server.Models
         public int TouristTripType(Tourist tourist)
         {
             DBservices db = new DBservices();
-            return db.TouristTripType(tourist);
+
+            if (db.GetTouristtripPlan(tourist).Email == null)
+            {
+                return db.TouristTripType(tourist);
+            }
+            else
+            {
+                return db.updateTripType(tourist);
+            }
+          
         }
 
         public int FlightsDates(Tourist tourist)

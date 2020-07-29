@@ -48,8 +48,17 @@ namespace IsraVisor_server.Controllers
 
         //Post To Check log in // בודק אם משתמש קיים
         [HttpPost]
+        [Route("api/Guide/PostToCheckIfSignUp")]
+        public int CheckPostSignUp([FromBody]Guide guideCheck)
+        {
+            Guide checkGuide = new Guide();
+            return checkGuide.PostGuideToCheckSignUp(guideCheck);
+        }
+
+        //Post To Check log in // בודק אם משתמש קיים
+        [HttpPost]
         [Route("api/Guide/PostToCheck")]
-        public Guide CheckPost([FromBody]Guide guideCheck)
+        public Guide CheckPostSignIn([FromBody]Guide guideCheck)
         {
             Guide checkGuide = new Guide();
             return checkGuide.PostGuideToCheck(guideCheck);
@@ -58,10 +67,10 @@ namespace IsraVisor_server.Controllers
         //RESET PASSWORD
         [HttpPost]
         [Route("api/Guide/Reset")]
-        public void Reset([FromBody]Guide guide)
+        public Guide Reset([FromBody]Guide guide)
         {
             Guide checkGuide = new Guide();
-             checkGuide.ResetPassword(guide.Email);
+            return checkGuide.ResetPassword(guide.Email);
         }
 
         [HttpPost]
@@ -147,6 +156,7 @@ namespace IsraVisor_server.Controllers
             Guide guide = new Guide();
             return(guide.UpdateGuideSQL(g));
         }
+      
 
         // DELETE api/<controller>/5
         public void Delete(int id)
