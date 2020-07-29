@@ -246,6 +246,11 @@
             ajaxCall("POST", "../../api/Guide_Tourist", JSON.stringify(Guide_Tourist), successCBPut, errorCBPut)
 
         }
+
+        function ResetPassword() {
+            var email = 'nilgivol01@gmail.com';
+            ajaxCall("POST", "../../api/Tourist/Reset", JSON.stringify(email), successCBPut, errorCBPut)
+        }
         function GetRank() {
 
           
@@ -267,6 +272,7 @@
 
 <body>
     <button onclick="GetStatusTourist()">StatusTourist</button>
+    <button onclick="ResetPassword()">ResetPassword</button>
 
     <button onclick="GetAPIGOOGLE()">dddddddddddddd</button>
     <button onclick="GetRank()">Get RANK GUIDE</button>

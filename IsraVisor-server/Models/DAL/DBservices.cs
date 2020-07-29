@@ -2959,7 +2959,7 @@ public class DBservices
         StringBuilder sb = new StringBuilder();
         // use a string builder to create the dynamic string
 
-        command = "UPDATE TouristProject SET passwordTourist = '" + randPass + "' WHERE email = " + email;
+        command = "UPDATE TouristProject SET passwordTourist = '" + randPass + "' WHERE email = '" + email + "'";
         return command;
     }
 
